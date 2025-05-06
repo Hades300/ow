@@ -1,0 +1,53 @@
+{
+  "patches": [
+    {
+      "date": "2025-04-15",
+      "hero": [
+        "ana"
+      ],
+      "content": "治疗生物手雷冷却时间从12秒减少到10秒",
+      "patchType": "buff"
+    },
+    {
+      "date": "2025-04-15",
+      "hero": [
+        "kiriko"
+      ],
+      "content": "苦无伤害从40减少到35",
+      "patchType": "nerf"
+    },
+    {
+      "date": "2025-04-20",
+      "hero": [
+        "cassidy"
+      ],
+      "content": "闪光弹眩晕时间从0.8秒增加到1秒",
+      "patchType": "buff"
+    },
+    {
+      "date": "2025-04-25",
+      "hero": [
+        "genji",
+        "hanzo"
+      ],
+      "content": "所有英雄基础生命值增加50点",
+      "patchType": "update"
+    },
+    {
+      "date": "2025-05-01",
+      "hero": [
+        "soldier-76"
+      ],
+      "content": "螺旋飞弹冷却时间从6秒增加到8秒",
+      "patchType": "nerf"
+    },
+    {
+      "date": "2025-05-01",
+      "hero": [
+        "sojourn"
+      ],
+      "content": "电磁炮充能速度提升10%",
+      "patchType": "buff"
+    }
+  ]
+}

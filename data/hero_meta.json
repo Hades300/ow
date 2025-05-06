@@ -1,0 +1,262 @@
+{
+  "heroes": [
+    {
+      "hero_id": "ana",
+      "hero_name": "安娜",
+      "hero_icon": "/icons/ana.png",
+      "hero_role": "support"
+    },
+    {
+      "hero_id": "kiriko",
+      "hero_name": "桐",
+      "hero_icon": "/icons/kiriko.png",
+      "hero_role": "support"
+    },
+    {
+      "hero_id": "cassidy",
+      "hero_name": "卡西迪",
+      "hero_icon": "/icons/cassidy.png",
+      "hero_role": "damage"
+    },
+    {
+      "hero_id": "genji",
+      "hero_name": "源氏",
+      "hero_icon": "/icons/genji.png",
+      "hero_role": "damage"
+    },
+    {
+      "hero_id": "soldier-76",
+      "hero_name": "士兵76",
+      "hero_icon": "/icons/soldier-76.png",
+      "hero_role": "damage"
+    },
+    {
+      "hero_id": "sojourn",
+      "hero_name": "索杰恩",
+      "hero_icon": "/icons/sojourn.png",
+      "hero_role": "damage"
+    },
+    {
+      "hero_id": "juno",
+      "hero_name": "朱诺",
+      "hero_icon": "/icons/juno.png",
+      "hero_role": "support"
+    },
+    {
+      "hero_id": "zenyatta",
+      "hero_name": "禅雅塔",
+      "hero_icon": "/icons/zenyatta.png",
+      "hero_role": "support"
+    },
+    {
+      "hero_id": "moira",
+      "hero_name": "莫伊拉",
+      "hero_icon": "/icons/moira.png",
+      "hero_role": "support"
+    },
+    {
+      "hero_id": "sigma",
+      "hero_name": "西格玛",
+      "hero_icon": "/icons/sigma.png",
+      "hero_role": "tank"
+    },
+    {
+      "hero_id": "reaper",
+      "hero_name": "死神",
+      "hero_icon": "/icons/reaper.png",
+      "hero_role": "damage"
+    },
+    {
+      "hero_id": "ramattra",
+      "hero_name": "拉玛刹",
+      "hero_icon": "/icons/ramattra.png",
+      "hero_role": "tank"
+    },
+    {
+      "hero_id": "ashe",
+      "hero_name": "艾什",
+      "hero_icon": "/icons/ashe.png",
+      "hero_role": "damage"
+    },
+    {
+      "hero_id": "winston",
+      "hero_name": "温斯顿",
+      "hero_icon": "/icons/winston.png",
+      "hero_role": "tank"
+    },
+    {
+      "hero_id": "freja",
+      "hero_name": "芙蕾雅",
+      "hero_icon": "/icons/freja.png",
+      "hero_role": "damage"
+    },
+    {
+      "hero_id": "brigitte",
+      "hero_name": "布丽吉塔",
+      "hero_icon": "/icons/brigitte.png",
+      "hero_role": "support"
+    },
+    {
+      "hero_id": "orisa",
+      "hero_name": "奥丽莎",
+      "hero_icon": "/icons/orisa.png",
+      "hero_role": "tank"
+    },
+    {
+      "hero_id": "pharah",
+      "hero_name": "法老之鹰",
+      "hero_icon": "/icons/pharah.png",
+      "hero_role": "damage"
+    },
+    {
+      "hero_id": "mercy",
+      "hero_name": "天使",
+      "hero_icon": "/icons/mercy.png",
+      "hero_role": "support"
+    },
+    {
+      "hero_id": "dva",
+      "hero_name": "D.Va",
+      "hero_icon": "/icons/dva.png",
+      "hero_role": "tank"
+    },
+    {
+      "hero_id": "hazard",
+      "hero_name": "哈萨德",
+      "hero_icon": "/icons/hazard.png",
+      "hero_role": "tank"
+    },
+    {
+      "hero_id": "venture",
+      "hero_name": "冒险家",
+      "hero_icon": "/icons/venture.png",
+      "hero_role": "damage"
+    },
+    {
+      "hero_id": "lifeweaver",
+      "hero_name": "生命之梭",
+      "hero_icon": "/icons/lifeweaver.png",
+      "hero_role": "support"
+    },
+    {
+      "hero_id": "bastion",
+      "hero_name": "堡垒",
+      "hero_icon": "/icons/bastion.png",
+      "hero_role": "damage"
+    },
+    {
+      "hero_id": "mauga",
+      "hero_name": "毛加",
+      "hero_icon": "/icons/mauga.png",
+      "hero_role": "tank"
+    },
+    {
+      "hero_id": "mei",
+      "hero_name": "美",
+      "hero_icon": "/icons/mei.png",
+      "hero_role": "damage"
+    },
+    {
+      "hero_id": "baptiste",
+      "hero_name": "巴蒂斯特",
+      "hero_icon": "/icons/baptiste.png",
+      "hero_role": "support"
+    },
+    {
+      "hero_id": "tracer",
+      "hero_name": "猎空",
+      "hero_icon": "/icons/tracer.png",
+      "hero_role": "damage"
+    },
+    {
+      "hero_id": "lucio",
+      "hero_name": "卢西奥",
+      "hero_icon": "/icons/lucio.png",
+      "hero_role": "support"
+    },
+    {
+      "hero_id": "widowmaker",
+      "hero_name": "黑百合",
+      "hero_icon": "/icons/widowmaker.png",
+      "hero_role": "damage"
+    },
+    {
+      "hero_id": "torbjorn",
+      "hero_name": "托比昂",
+      "hero_icon": "/icons/torbjorn.png",
+      "hero_role": "damage"
+    },
+    {
+      "hero_id": "junker-queen",
+      "hero_name": "渣客女王",
+      "hero_icon": "/icons/junker-queen.png",
+      "hero_role": "tank"
+    },
+    {
+      "hero_id": "illari",
+      "hero_name": "伊拉锐",
+      "hero_icon": "/icons/illari.png",
+      "hero_role": "support"
+    },
+    {
+      "hero_id": "hanzo",
+      "hero_name": "半藏",
+      "hero_icon": "/icons/hanzo.png",
+      "hero_role": "damage"
+    },
+    {
+      "hero_id": "reinhardt",
+      "hero_name": "莱因哈特",
+      "hero_icon": "/icons/reinhardt.png",
+      "hero_role": "tank"
+    },
+    {
+      "hero_id": "roadhog",
+      "hero_name": "路霸",
+      "hero_icon": "/icons/roadhog.png",
+      "hero_role": "tank"
+    },
+    {
+      "hero_id": "junkrat",
+      "hero_name": "狂鼠",
+      "hero_icon": "/icons/junkrat.png",
+      "hero_role": "damage"
+    },
+    {
+      "hero_id": "doomfist",
+      "hero_name": "末日铁拳",
+      "hero_icon": "/icons/doomfist.png",
+      "hero_role": "tank"
+    },
+    {
+      "hero_id": "symmetra",
+      "hero_name": "秩序之光",
+      "hero_icon": "/icons/symmetra.png",
+      "hero_role": "damage"
+    },
+    {
+      "hero_id": "zarya",
+      "hero_name": "查莉娅",
+      "hero_icon": "/icons/zarya.png",
+      "hero_role": "tank"
+    },
+    {
+      "hero_id": "wrecking-ball",
+      "hero_name": "破坏球",
+      "hero_icon": "/icons/wrecking-ball.png",
+      "hero_role": "tank"
+    },
+    {
+      "hero_id": "echo",
+      "hero_name": "回声",
+      "hero_icon": "/icons/echo.png",
+      "hero_role": "damage"
+    },
+    {
+      "hero_id": "sombra",
+      "hero_name": "黑影",
+      "hero_icon": "/icons/sombra.png",
+      "hero_role": "damage"
+    }
+  ]
+}

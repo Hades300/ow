@@ -1,0 +1,8 @@
+name = "ow-hero-dashboard"
+main = "worker/index.js"
+compatibility_date = "2023-12-20"
+
+[vars]
+GITHUB_TOKEN = "" # 需要在部署时设置
+GITHUB_REPO = "github.com/Hades300/ow"
+GITHUB_BRANCH = "main"
