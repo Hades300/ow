@@ -1,6 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import dayjs from 'dayjs';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+} from 'chart.js';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+dayjs.extend(isSameOrBefore);
 
 interface Hero {
   hero_id: string;
@@ -34,22 +57,44 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     // 获取英雄元数据
-    fetch('/api/heroes')
+    fetch('/data/hero_meta.json')
       .then(res => res.json())
-      .then(data => setHeroes(data));
+      .then(data => setHeroes(data.heroes));
   }, []);
 
   useEffect(() => {
     if (selectedHero && dateRange[0] && dateRange[1]) {
-      // 获取英雄数据
-      fetch(`/api/hero-data/${selectedHero}?start=${dateRange[0]}&end=${dateRange[1]}`)
+      // 从合并数据文件中获取英雄数据
+      fetch('/data/merged_data.json')
         .then(res => res.json())
-        .then(data => setHeroData(data));
+        .then(mergedData => {
+          const startDate = dayjs(dateRange[0]);
+          const endDate = dayjs(dateRange[1]);
+          const filteredData = [];
+
+          // 筛选日期范围内的数据
+          Object.entries(mergedData).forEach(([date, dayData]) => {
+            const currentDate = dayjs(date);
+            if (currentDate.isSameOrAfter(startDate) && currentDate.isSameOrBefore(endDate)) {
+              const heroData = dayData.data.filter(d => d.hero_id === selectedHero);
+              filteredData.push(...heroData);
+            }
+          });
+
+          setHeroData(filteredData);
+        });"}]}}}
 
       // 获取补丁记录
-      fetch(`/api/patch-notes/${selectedHero}?start=${dateRange[0]}&end=${dateRange[1]}`)
+      fetch('/data/patch_notes.json')
         .then(res => res.json())
-        .then(data => setPatchNotes(data));
+        .then(data => {
+          const filteredNotes = data.patches.filter(note => 
+            note.hero.includes(selectedHero) && 
+            note.date >= dateRange[0] && 
+            note.date <= dateRange[1]
+          );
+          setPatchNotes(filteredNotes);
+        });
     }
   }, [selectedHero, dateRange]);
 
@@ -61,9 +106,33 @@ const Dashboard: React.FC = () => {
                selectedStat === 'selection_ratio' ? '选择率' : 'KDA',
         data: heroData.map(d => d[selectedStat]),
         borderColor: '#3b82f6',
-        tension: 0.1
+        tension: 0.1,
+        fill: false
       }
     ]
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        type: 'category' as const,
+        display: true,
+        title: {
+          display: true,
+          text: '日期'
+        }
+      },
+      y: {
+        display: true,
+        title: {
+          display: true,
+          text: selectedStat === 'win_ratio' ? '胜率 (%)' : 
+                selectedStat === 'selection_ratio' ? '选择率 (%)' : 'KDA'
+        }
+      }
+    }
   };
 
   return (
@@ -140,7 +209,7 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
           <div className="h-80">
-            <Line data={chartData} options={{ maintainAspectRatio: false }} />
+            <Line data={chartData} options={chartOptions} redraw={true} />
           </div>
         </div>
 
