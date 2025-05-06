@@ -31,12 +31,32 @@ jobs:
           const fs = require("fs");
           const path = require("path");
 
+          function getCurrentSeason() {
+            const seasonsPath = path.join("data", "seasons.json");
+            const seasons = JSON.parse(fs.readFileSync(seasonsPath, "utf8")).seasons;
+            const today = new Date();
+            
+            for (const season of seasons) {
+              const startDate = new Date(season.start_date);
+              const endDate = season.end_date ? new Date(season.end_date) : new Date("9999-12-31");
+              
+              if (today >= startDate && today <= endDate) {
+                return season.season;
+              }
+            }
+            
+            return seasons[seasons.length - 1].season; // 默认返回最新赛季
+          }
+
           async function fetchData() {
             try {
+              const currentSeason = getCurrentSeason();
+              console.log(`Using season: ${currentSeason}`);
+
               const response = await axios.get("https://webapi.blizzard.cn/ow-armory-server/hero_leaderboard", {
                 params: {
                   game_mode: "jingji",
-                  season: "15",
+                  season: currentSeason,
                   mmr: "-127"
                 },
                 headers: {
@@ -48,17 +68,21 @@ jobs:
 
               const date = new Date().toISOString().split("T")[0];
               const dataDir = path.join("data", "daily");
+              const filePath = path.join(dataDir, `${date}.json`);
               
               if (!fs.existsSync(dataDir)) {
                 fs.mkdirSync(dataDir, { recursive: true });
               }
 
-              fs.writeFileSync(
-                path.join(dataDir, `${date}.json`),
-                JSON.stringify(response.data, null, 2)
-              );
+              // 添加时间戳和赛季信息，确保数据幂等性
+              const dataToSave = {
+                timestamp: new Date().toISOString(),
+                season: currentSeason,
+                data: response.data
+              };
 
-              console.log(`Successfully collected data for ${date}`);
+              fs.writeFileSync(filePath, JSON.stringify(dataToSave, null, 2));
+              console.log(`Successfully collected data for ${date} (Season ${currentSeason})`);
             } catch (error) {
               console.error("Error fetching data:", error.message);
               process.exit(1);
