@@ -72,5 +72,5 @@ jobs:
           git add data/daily/
           git diff --quiet && git diff --staged --quiet || (
             git commit -m "Update hero data $(date +'%Y-%m-%d')"
-            git push
+            git push "https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
           )
