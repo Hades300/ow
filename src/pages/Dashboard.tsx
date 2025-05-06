@@ -82,7 +82,7 @@ const Dashboard: React.FC = () => {
           });
 
           setHeroData(filteredData);
-        });"}]}}}
+        });
 
       // 获取补丁记录
       fetch('/data/patch_notes.json')
