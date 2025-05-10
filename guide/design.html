@@ -1,339 +1,999 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hero Performance Analytics</title>
+    <title>守望先锋 英雄数据看板</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide-react@latest/dist/umd/lucide-react.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #111827; /* Dark background */
-            color: #d1d5db; /* Light gray text */
+            background-color: #121826; /* Slightly darker main background */
+            color: #e2e8f0;
+            display: flex;
+            overflow-x: hidden; /* Prevent horizontal scroll during transitions */
         }
-        /* Custom scrollbar for better dark theme integration */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+        .ow-sidebar {
+            width: 250px; /* Sidebar width */
+            background-color: #1f2937; /* Darker sidebar */
+            padding: 1.25rem 0.75rem; /* Adjusted padding */
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            border-right: 1px solid #374151; /* Slightly lighter border */
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            transition: width 0.3s ease-in-out;
         }
-        ::-webkit-scrollbar-track {
-            background: #1f2937; /* Darker track */
-            border-radius: 10px;
+        .ow-sidebar.collapsed {
+            width: 70px; /* Collapsed sidebar width */
         }
-        ::-webkit-scrollbar-thumb {
-            background: #4b5563; /* Gray thumb */
-            border-radius: 10px;
+        .ow-sidebar.collapsed .ow-sidebar-header-text,
+        .ow-sidebar.collapsed .ow-sidebar-nav button span,
+        .ow-sidebar.collapsed .sidebar-toggle-text {
+            display: none;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #6b7280; /* Lighter gray on hover */
+        .ow-sidebar.collapsed .ow-sidebar-nav button svg {
+            margin-right: 0;
         }
-        /* Simple placeholder chart styling */
-        .chart-placeholder {
-            border: 1px dashed #4b5563;
+         .ow-sidebar.collapsed .ow-sidebar-nav button,
+         .ow-sidebar.collapsed .sidebar-toggle-button {
+            justify-content: center; /* Center icon when collapsed */
+        }
+        .ow-sidebar.collapsed .sidebar-toggle-button svg {
+             margin-right: 0;
+        }
+
+
+        .ow-sidebar-header {
+            font-size: 1.6rem; /* Slightly larger */
+            font-weight: 700;
+            color: #ff9c00;
+            margin-bottom: 1.5rem; /* Reduced margin */
+            text-align: center;
+            padding: 0.5rem 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 300px; /* Ensure chart area has height */
-            background: repeating-linear-gradient(
-                45deg,
-                #1f2937,
-                #1f2937 10px,
-                #374151 10px,
-                #374151 20px
-            );
-            opacity: 0.6;
         }
-        .chart-placeholder svg {
-            width: 80%;
-            height: auto;
-            max-height: 250px;
+         .ow-sidebar-header-icon {
+            width: 32px;
+            height: 32px;
+            margin-right: 0.5rem;
+            transition: margin-right 0.3s ease-in-out;
         }
-        /* Style for patch note markers (example) */
-        .patch-marker {
-            position: absolute;
-            bottom: -5px; /* Position below the x-axis */
-            transform: translateX(-50%);
-            width: 10px;
-            height: 10px;
-            background-color: #f59e0b; /* Amber color for visibility */
-            border-radius: 50%;
+        .ow-sidebar.collapsed .ow-sidebar-header-icon {
+            margin-right: 0;
+        }
+
+
+        .ow-sidebar-nav button {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            text-align: left;
+            padding: 0.9rem 1.1rem; /* Increased padding */
+            margin-bottom: 0.5rem;
+            border-radius: 8px; /* More rounded */
+            font-weight: 500;
+            color: #9ca3af; /* Adjusted color */
+            transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .ow-sidebar-nav button svg {
+            margin-right: 0.85rem; /* Adjusted margin */
+            width: 22px; /* Slightly larger icons */
+            height: 22px;
+            stroke-width: 2;
+            transition: margin-right 0.3s ease-in-out;
+        }
+        .ow-sidebar-nav button:hover {
+            background-color: #374151; /* Darker hover */
+            color: #f3f4f6; /* Lighter text on hover */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .ow-sidebar-nav button.tab-active {
+            background-color: #ff9c00;
+            color: #111827; /* Darker text for better contrast on orange */
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(255, 156, 0, 0.2);
+        }
+        .ow-sidebar-nav button.tab-active:hover {
+            background-color: #f59300; /* Slightly darker orange on hover */
+        }
+
+        .sidebar-toggle-button {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            text-align: left;
+            padding: 0.9rem 1.1rem;
+            margin-top: auto; /* Pushes to the bottom */
+            border-radius: 8px;
+            font-weight: 500;
+            color: #9ca3af;
+            background-color: transparent; /* Make it less prominent than nav buttons */
+            border: 1px solid #374151; /* Subtle border */
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        .sidebar-toggle-button svg {
+            margin-right: 0.85rem;
+            width: 22px;
+            height: 22px;
+            stroke-width: 2;
+            transition: transform 0.3s ease-in-out, margin-right 0.3s ease-in-out;
+        }
+        .ow-sidebar.collapsed .sidebar-toggle-button svg {
+            transform: rotate(180deg);
+        }
+        .sidebar-toggle-button:hover {
+            background-color: #374151;
+            color: #f3f4f6;
+        }
+
+
+        .main-page-content {
+            margin-left: 250px; /* Initial offset by sidebar width */
+            flex-grow: 1;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            transition: margin-left 0.3s ease-in-out;
+        }
+        .ow-sidebar.collapsed ~ .main-page-content {
+            margin-left: 70px; /* Adjust margin for collapsed sidebar */
+        }
+
+        .container-fluid {
+           width: 100%;
+           max-width: 100%;
+           padding: 1.5rem; /* Increased padding */
+        }
+         @media (max-width: 768px) {
+            /* On smaller screens, sidebar starts collapsed by default */
+            .ow-sidebar { width: 70px; }
+            .ow-sidebar .ow-sidebar-header-text,
+            .ow-sidebar .ow-sidebar-nav button span,
+            .ow-sidebar .sidebar-toggle-text { display: none; }
+            .ow-sidebar .ow-sidebar-nav button svg { margin-right: 0; }
+            .ow-sidebar .ow-sidebar-nav button,
+            .ow-sidebar .sidebar-toggle-button { justify-content: center; }
+            .ow-sidebar .sidebar-toggle-button svg { margin-right: 0; transform: rotate(180deg); }
+            .ow-sidebar .ow-sidebar-header-icon { margin-right: 0; }
+
+
+            .main-page-content { margin-left: 70px; }
+            .container-fluid { padding: 1rem; }
+            .ow-header h1 { font-size: 2rem; } /* Adjust header font size */
+            .hero-grid { grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)); } /* Smaller hero portraits on mobile */
+            .hero-portrait { width: 60px; height: 60px; }
+        }
+
+
+        .ow-header {
+            background: linear-gradient(135deg, #232a3b 0%, #1a202c 100%); /* Subtle gradient */
+            border-bottom: 3px solid #ff9c00;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .ow-button {
+            background-color: #007aff; /* Brighter blue */
+            color: white;
+            padding: 10px 20px; /* Slightly more padding */
+            border-radius: 8px; /* More rounded */
+            transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+            border: none; /* Remove border for a flatter look, rely on shadow */
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.75px; /* Increased letter spacing */
+            box-shadow: 0 2px 5px rgba(0, 122, 255, 0.3), 0 1px 2px rgba(0,0,0,0.1);
             cursor: pointer;
-            z-index: 10;
-            transition: transform 0.2s ease;
         }
-        .patch-marker:hover {
-            transform: translateX(-50%) scale(1.5);
+        .ow-button:hover {
+            background-color: #006edf;
+            transform: translateY(-2px); /* More lift */
+            box-shadow: 0 4px 8px rgba(0, 122, 255, 0.4), 0 2px 4px rgba(0,0,0,0.15);
         }
-        /* Active state styling */
-        .hero-card.active {
-            border-color: #3b82f6; /* Blue border for active */
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+        .ow-button:active {
+            transform: translateY(0px);
+            box-shadow: 0 1px 3px rgba(0, 122, 255, 0.3), 0 1px 1px rgba(0,0,0,0.1);
         }
-        .stat-button.active {
-            background-color: #3b82f6;
-            color: #ffffff;
+        .ow-button.secondary {
+            background-color: #4b5563; /* Darker gray */
+            box-shadow: 0 2px 5px rgba(75, 85, 99, 0.3), 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .ow-button.secondary:hover {
+            background-color: #5a6678;
+            box-shadow: 0 4px 8px rgba(75, 85, 99, 0.4), 0 2px 4px rgba(0,0,0,0.15);
+        }
+        .ow-button.accent { /* New accent button style */
+            background-color: #ff9c00;
+            color: #111827;
+            box-shadow: 0 2px 5px rgba(255, 156, 0, 0.3), 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .ow-button.accent:hover {
+            background-color: #f59300;
+            box-shadow: 0 4px 8px rgba(255, 156, 0, 0.4), 0 2px 4px rgba(0,0,0,0.15);
+        }
+
+
+        .ow-card {
+            background-color: #1f2937; /* Consistent with sidebar */
+            border-radius: 10px; /* More rounded */
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3), 0 3px 10px rgba(0,0,0,0.15); /* Softer, deeper shadow */
+            border: 1px solid #374151; /* Subtle border */
+        }
+        .ow-buff { color: #22c55e; font-weight: bold; } /* Brighter green */
+        .ow-nerf { color: #ef4444; font-weight: bold; } /* Brighter red */
+        .ow-update { color: #f59e0b; font-weight: bold; } /* Brighter yellow/orange */
+
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #1f2937; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 10px; border: 2px solid #1f2937; }
+        ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+
+        .hero-portrait {
+            width: 70px; height: 70px;
+            border: 3px solid transparent;
+            transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer; border-radius: 8px; overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .hero-portrait:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        .hero-portrait.selected {
+            border-color: #ff9c00;
+            box-shadow: 0 0 15px rgba(255, 156, 0, 0.6), 0 0 5px rgba(255, 156, 0, 0.4);
+        }
+        .hero-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 1rem; /* Increased gap */
+        }
+        .date-filter-card input[type="date"] {
+            background-color: #374151; /* Darker input background */
+            border: 1px solid #4b5563; /* Softer border */
+            color: #e2e8f0;
+            padding: 0.75rem; /* Increased padding */
+            border-radius: 8px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .date-filter-card input[type="date"]:focus {
+            border-color: #ff9c00;
+            box-shadow: 0 0 0 2px rgba(255, 156, 0, 0.3);
+            outline: none;
+        }
+        .date-filter-card input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.8) brightness(1.1);
+        }
+
+        .patch-card {
+            border-left-width: 6px; /* Thicker accent */
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .patch-card:hover {
+            transform: translateY(-4px) scale(1.01); /* More pronounced hover */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .patch-buff { border-left-color: #22c55e; }
+        .patch-nerf { border-left-color: #ef4444; }
+        .patch-update { border-left-color: #f59e0b; }
+
+        .modal {
+            display: none; position: fixed; z-index: 1000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            overflow: auto; background-color: rgba(10, 14, 22, 0.9); /* Darker, more opaque backdrop */
+            backdrop-filter: blur(6px); /* Stronger blur */
+        }
+        .modal-content {
+            background-color: #1f2937; margin: 7% auto; padding: 35px; /* More padding */
+            border: 1px solid #374151; width: 90%; max-width: 700px; /* Wider modal */
+            border-radius: 12px; /* More rounded modal */
+            position: relative;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.6); /* Stronger shadow */
+        }
+        .close-button {
+            color: #9ca3af; position: absolute; top: 18px; right: 22px;
+            font-size: 36px; font-weight: 300; /* Lighter weight */
+            cursor: pointer;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+        .close-button:hover, .close-button:focus { color: #ff9c00; transform: rotate(90deg); }
+
+        .chart-container {
+            position: relative; height: 300px; /* Slightly taller charts */
+            width: 100%;
+        }
+        canvas { border-radius: 8px; } /* Match card rounding */
+
+        #noHeroSelected {
+            background-color: rgba(31, 41, 55, 0.7); /* Slightly transparent */
+            border: 2px dashed #4b5563; /* Dashed border */
+        }
+        #noHeroSelected svg {
+            width: 72px; height: 72px; /* Larger icon */
+            stroke-width: 1.2; /* Thinner stroke for Lucide icon */
         }
     </style>
 </head>
-<body class="p-4 md:p-8">
-
-    <div class="container mx-auto max-w-7xl">
-        <h1 class="text-3xl font-bold mb-6 text-white">Hero Performance Analytics</h1>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="bg-gray-800 p-4 rounded-lg shadow-md md:col-span-2">
-                <h2 class="text-lg font-semibold mb-3 text-gray-300 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users mr-2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                    Select Hero
-                </h2>
-                <div class="flex flex-wrap gap-3 max-h-32 overflow-y-auto p-1 custom-scrollbar">
-                    <div class="hero-card active flex flex-col items-center p-2 bg-gray-700 rounded-md border-2 border-gray-600 hover:border-blue-500 cursor-pointer transition duration-150" onclick="selectHero(this)">
-                        <img src="https://placehold.co/40x40/6366f1/FFF?text=H1" alt="Hero 1" class="w-10 h-10 rounded-full mb-1" onerror="this.src='https://placehold.co/40x40/7f7f7f/FFF?text=Err'">
-                        <span class="text-xs font-medium text-gray-300">Hero One</span>
-                    </div>
-                    <div class="hero-card flex flex-col items-center p-2 bg-gray-700 rounded-md border-2 border-gray-600 hover:border-blue-500 cursor-pointer transition duration-150" onclick="selectHero(this)">
-                        <img src="https://placehold.co/40x40/ec4899/FFF?text=H2" alt="Hero 2" class="w-10 h-10 rounded-full mb-1" onerror="this.src='https://placehold.co/40x40/7f7f7f/FFF?text=Err'">
-                        <span class="text-xs font-medium text-gray-300">Hero Two</span>
-                    </div>
-                    <div class="hero-card flex flex-col items-center p-2 bg-gray-700 rounded-md border-2 border-gray-600 hover:border-blue-500 cursor-pointer transition duration-150" onclick="selectHero(this)">
-                        <img src="https://placehold.co/40x40/22c55e/FFF?text=H3" alt="Hero 3" class="w-10 h-10 rounded-full mb-1" onerror="this.src='https://placehold.co/40x40/7f7f7f/FFF?text=Err'">
-                        <span class="text-xs font-medium text-gray-300">Hero Three</span>
-                    </div>
-                     <div class="hero-card flex flex-col items-center p-2 bg-gray-700 rounded-md border-2 border-gray-600 hover:border-blue-500 cursor-pointer transition duration-150" onclick="selectHero(this)">
-                        <img src="https://placehold.co/40x40/f97316/FFF?text=H4" alt="Hero 4" class="w-10 h-10 rounded-full mb-1" onerror="this.src='https://placehold.co/40x40/7f7f7f/FFF?text=Err'">
-                        <span class="text-xs font-medium text-gray-300">Hero Four</span>
-                    </div>
-                    </div>
-            </div>
-
-            <div class="bg-gray-800 p-4 rounded-lg shadow-md">
-                <h2 class="text-lg font-semibold mb-3 text-gray-300 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-range mr-2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/><path d="M17 14h-6"/><path d="M13 18H7"/><path d="M7 14h.01"/><path d="M17 18h.01"/></svg>
-                    Time Range
-                </h2>
-                <div class="space-y-3">
-                    <select class="w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option>Last 3 Patches</option>
-                        <option>Last 6 Patches</option>
-                        <option>Season 10</option>
-                        <option>Season 9</option>
-                        <option>Custom Range...</option>
-                    </select>
-                    <div class="flex space-x-2 text-sm">
-                        <input type="date" value="2025-03-01" class="p-2 bg-gray-700 border border-gray-600 rounded-md text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1">
-                        <span class="self-center">to</span>
-                        <input type="date" value="2025-05-06" class="p-2 bg-gray-700 border border-gray-600 rounded-md text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1">
-                    </div>
-                </div>
-            </div>
+<body>
+    <aside id="sidebar" class="ow-sidebar">
+        <div class="ow-sidebar-header">
+             <svg class="ow-sidebar-header-icon" viewBox="0 0 100 100" fill="#ff9c00" xmlns="http://www.w3.org/2000/svg">
+                <path d="M50 0C22.386 0 0 22.386 0 50s22.386 50 50 50 50-22.386 50-50S77.614 0 50 0zm0 88.235c-21.176 0-38.235-17.059-38.235-38.235S28.824 11.765 50 11.765s38.235 17.059 38.235 38.235-17.059 38.235-38.235 38.235z"/>
+                <path d="M50 26.47c-13.235 0-23.53 10.294-23.53 23.53S36.765 73.53 50 73.53s23.53-10.294 23.53-23.53S63.235 26.47 50 26.47zm0 35.294c-6.47 0-11.764-5.294-11.764-11.764s5.294-11.765 11.764-11.765S61.764 43.53 61.764 50s-5.293 11.764-11.764 11.764z"/>
+            </svg>
+            <span class="ow-sidebar-header-text">数据看板</span>
         </div>
+        <nav class="ow-sidebar-nav mt-4 flex-grow">
+            <button id="btnViewDashboard" class="tab-active">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+                <span>英雄数据</span>
+            </button>
+            <button id="btnViewPatches">
+                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+                <span>所有更新</span>
+            </button>
+        </nav>
+        <button id="sidebarToggleBtn" class="sidebar-toggle-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            <span class="sidebar-toggle-text">收起侧栏</span>
+        </button>
+         <div class="text-center text-xs text-gray-500 mt-3 pb-1 ow-sidebar.collapsed .sidebar-toggle-text">
+            <p>&copy; <span id="sidebarCurrentYear"></span></p>
+        </div>
+    </aside>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="main-page-content">
+        <div class="container-fluid mx-auto flex-grow flex flex-col">
+            <header class="ow-header p-5 mb-8 rounded-lg shadow-xl"> <h1 class="text-4xl font-bold text-center text-white tracking-wide" style="text-shadow: 0 0 12px #ff9c00, 0 0 6px #ff9c00;">
+                    守望先锋 <span class="text-orange-400">英雄数据看板</span>
+                </h1>
+            </header>
 
-            <div class="lg:col-span-2 bg-gray-800 p-4 rounded-lg shadow-md">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-semibold text-gray-300 flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-line-chart mr-2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-                        Performance Trends (<span id="selected-hero-name">Hero One</span>)
-                    </h2>
-                    <div class="flex space-x-2">
-                         <button class="stat-button active text-xs px-3 py-1 bg-gray-600 hover:bg-gray-500 rounded-md transition duration-150" onclick="selectStat(this)">Win Rate</button>
-                         <button class="stat-button text-xs px-3 py-1 bg-gray-600 hover:bg-gray-500 rounded-md transition duration-150" onclick="selectStat(this)">Pick Rate</button>
-                         <button class="stat-button text-xs px-3 py-1 bg-gray-600 hover:bg-gray-500 rounded-md transition duration-150" onclick="selectStat(this)">KDA</button>
-                         <button class="stat-button text-xs px-3 py-1 bg-gray-600 hover:bg-gray-500 rounded-md transition duration-150" onclick="selectStat(this)">Damage/Min</button>
-                    </div>
-                </div>
-                <div class="relative chart-placeholder rounded-md">
-                     <svg viewBox="0 0 100 40" preserveAspectRatio="none">
-                        <polyline points="5,35 20,15 35,25 50,10 65,20 80,5 95,15" fill="none" stroke="#3b82f6" stroke-width="1"/>
-                        <g class="patch-marker-group">
-                            <rect class="patch-marker" x="35" y="35" width="2" height="2" fill="#f59e0b" data-patch="Patch 10.5 - Buff" onclick="showPatchNotes('patch-10-5')"></rect>
-                            <rect class="patch-marker" x="65" y="35" width="2" height="2" fill="#ef4444" data-patch="Patch 10.8 - Nerf" onclick="showPatchNotes('patch-10-8')"></rect>
-                        </g>
-                    </svg>
-                    <span class="text-gray-500 text-sm absolute inset-0 flex items-center justify-center pointer-events-none">Trend Chart Area</span>
-                </div>
-                 <div class="mt-4">
-                     <label for="timeline-slider" class="block text-sm font-medium text-gray-400 mb-1">Timeline</label>
-                     <input type="range" id="timeline-slider" name="timeline-slider" min="0" max="100" value="100" class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer accent-blue-500">
-                     <div class="flex justify-between text-xs text-gray-500 mt-1">
-                         <span>Patch 10.1</span>
-                         <span>Patch 10.10</span>
-                     </div>
-                 </div>
-            </div>
+            <main id="mainContent" class="flex-grow">
+                <div id="dashboardView">
+                    <section class="mb-8 ow-card p-6 sm:p-7"> <label class="block text-xl font-semibold text-gray-100 mb-4">选择英雄</label> <div id="heroGridContainer" class="hero-grid p-3 bg-gray-800/70 rounded-md max-h-52 sm:max-h-64 overflow-y-auto">
+                            </div>
+                    </section>
 
-            <div class="lg:col-span-1 space-y-6">
-                <div class="bg-gray-800 p-4 rounded-lg shadow-md">
-                    <h2 class="text-lg font-semibold mb-3 text-gray-300 flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-git-compare-arrows mr-2"><circle cx="5" cy="6" r="3"/><path d="M12 6h5a2 2 0 0 1 2 2v7"/><path d="M19 15l-3-3 3-3"/><circle cx="19" cy="18" r="3"/><path d="M12 18H7a2 2 0 0 1-2-2V9"/><path d="m5 9 3-3-3-3"/></svg>
-                        Compare Patches
-                    </h2>
-                    <div class="flex space-x-2 mb-3">
-                        <select class="w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option>Select Patch A</option>
-                            <option>Patch 10.5</option>
-                            <option>Patch 10.4</option>
-                        </select>
-                        <select class="w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option>Select Patch B</option>
-                            <option>Patch 10.8</option>
-                            <option>Patch 10.7</option>
-                        </select>
-                    </div>
-                    <table class="w-full text-sm text-left text-gray-400">
-                        <thead class="text-xs text-gray-400 uppercase bg-gray-700">
-                            <tr>
-                                <th scope="col" class="px-4 py-2">Stat</th>
-                                <th scope="col" class="px-4 py-2 text-center">Patch A (10.5)</th>
-                                <th scope="col" class="px-4 py-2 text-center">Patch B (10.8)</th>
-                                <th scope="col" class="px-4 py-2 text-center">Change</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="border-b border-gray-700">
-                                <td class="px-4 py-2 font-medium text-gray-300">Win Rate</td>
-                                <td class="px-4 py-2 text-center">52.1%</td>
-                                <td class="px-4 py-2 text-center">49.8%</td>
-                                <td class="px-4 py-2 text-center text-red-400">-2.3%</td>
-                            </tr>
-                            <tr class="border-b border-gray-700">
-                                <td class="px-4 py-2 font-medium text-gray-300">Pick Rate</td>
-                                <td class="px-4 py-2 text-center">15.5%</td>
-                                <td class="px-4 py-2 text-center">12.0%</td>
-                                <td class="px-4 py-2 text-center text-red-400">-3.5%</td>
-                            </tr>
-                             <tr>
-                                <td class="px-4 py-2 font-medium text-gray-300">KDA</td>
-                                <td class="px-4 py-2 text-center">3.8</td>
-                                <td class="px-4 py-2 text-center">3.5</td>
-                                <td class="px-4 py-2 text-center text-red-400">-0.3</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div id="patch-notes-section" class="bg-gray-800 p-4 rounded-lg shadow-md">
-                     <h2 class="text-lg font-semibold mb-3 text-gray-300 flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text mr-2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
-                        Relevant Patch Notes (<span id="selected-hero-name-notes">Hero One</span>)
-                    </h2>
-                    <div class="space-y-4 max-h-60 overflow-y-auto custom-scrollbar pr-2">
-                        <div id="patch-10-8" class="patch-note-entry hidden p-3 bg-gray-700 rounded-md border-l-4 border-red-500">
-                            <p class="font-semibold text-sm text-red-400 mb-1">Patch 10.8 (Nerf)</p>
-                            <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
-                                <li>Ability Q: Base damage reduced from 100/150/200 to 90/140/190.</li>
-                                <li>Ability W: Cooldown increased from 8s to 10s at all ranks.</li>
-                            </ul>
+                    <section class="mb-8 ow-card p-6 sm:p-7 date-filter-card">
+                         <label class="block text-xl font-semibold text-gray-100 mb-4">选择时间范围</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+                            <div>
+                                <label for="startDate" class="block text-sm font-medium text-gray-400 mb-1.5">开始日期</label>
+                                <input type="date" id="startDate" name="startDate" class="w-full">
+                            </div>
+                            <div>
+                                <label for="endDate" class="block text-sm font-medium text-gray-400 mb-1.5">结束日期</label>
+                                <input type="date" id="endDate" name="endDate" class="w-full">
+                            </div>
                         </div>
-                         <div id="patch-10-5" class="patch-note-entry hidden p-3 bg-gray-700 rounded-md border-l-4 border-green-500">
-                            <p class="font-semibold text-sm text-green-400 mb-1">Patch 10.5 (Buff)</p>
-                             <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
-                                <li>Base Armor increased from 25 to 28.</li>
-                                <li>Ability E: Mana cost reduced from 60 to 50.</li>
-                            </ul>
+                        <div class="mt-5 flex flex-wrap gap-3 justify-start"> <button id="presetTimeLastTwoPatches" class="ow-button secondary text-xs sm:text-sm py-2.5 px-4">最近两次更新</button>
+                            <button id="presetTimeLastMonth" class="ow-button secondary text-xs sm:text-sm py-2.5 px-4">最近一个月</button>
+                            </div>
+                    </section>
+
+                    <section id="heroSpecificData" class="hidden">
+                        <div class="ow-card p-6 sm:p-7 mb-8">
+                            <h2 id="heroNameDisplay" class="text-3xl font-semibold text-orange-400 mb-6 text-center sm:text-left">英雄名称</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-6"> <div>
+                                    <h3 class="text-lg font-semibold mb-3 text-gray-300 text-center">胜率 (Win Rate)</h3>
+                                    <div class="chart-container bg-gray-800/50 p-3 rounded-lg"><canvas id="winRateChart"></canvas></div>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold mb-3 text-gray-300 text-center">选取率 (Pick Rate)</h3>
+                                    <div class="chart-container bg-gray-800/50 p-3 rounded-lg"><canvas id="pickRateChart"></canvas></div>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold mb-3 text-gray-300 text-center">KDA</h3>
+                                    <div class="chart-container bg-gray-800/50 p-3 rounded-lg"><canvas id="kdaChart"></canvas></div>
+                                </div>
+                            </div>
                         </div>
-                        <p id="no-patch-notes" class="text-sm text-gray-500 italic">No relevant patch notes for the selected period or comparison.</p>
-                    </div>
+
+                        <div class="ow-card p-6 sm:p-7">
+                            <h3 class="text-2xl font-semibold text-gray-200 mb-5">相关更新历史 (选中时间段内)</h3>
+                            <div id="heroPatchHistory" class="space-y-4 max-h-[400px] overflow-y-auto p-1.5 pr-2">
+                                </div>
+                        </div>
+                    </section>
+                    <section id="noHeroSelected" class="text-center py-16 ow-card p-8"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="text-orange-500 mx-auto mb-5"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+                        <p class="text-xl text-gray-300">请先选择一位英雄并设置日期以查看数据。</p>
+                        <p class="text-sm text-gray-500 mt-2.5">点击上方英雄头像进行选择，日期更改后数据将自动加载。</p>
+                    </section>
                 </div>
-            </div>
+
+                <div id="patchesView" class="hidden">
+                    <section class="ow-card p-6 sm:p-7">
+                        <h2 class="text-3xl font-semibold text-orange-400 mb-7">所有游戏更新日志</h2>
+                        <div class="mb-6">
+                            <input type="text" id="patchSearch" placeholder="搜索更新内容或英雄名称..." class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3.5 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 placeholder-gray-400 text-gray-100">
+                        </div>
+                        <div id="allPatchesList" class="space-y-5 max-h-[70vh] overflow-y-auto p-1.5 pr-2">
+                            </div>
+                    </section>
+                </div>
+            </main>
+
+            <footer class="text-center p-8 mt-12 text-sm text-gray-500 border-t border-gray-700/50"> <p>守望先锋数据看板 &copy; <span id="footerCurrentYear"></span></p>
+                <p class="mt-1.5">数据仅供参考和娱乐。所有商标均为其各自所有者的财产。</p>
+            </footer>
         </div>
     </div>
 
+    <div id="patchDetailModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal()">&times;</span>
+            <h3 id="modalPatchDate" class="text-2xl font-semibold text-orange-400 mb-4"></h3>
+            <p id="modalPatchContent" class="text-gray-200 mb-5 text-lg leading-relaxed"></p>
+            <div id="modalAffectedHeroes" class="mb-5">
+                <strong class="text-gray-400">影响英雄:</strong> <span id="modalHeroList" class="text-gray-300"></span>
+            </div>
+            <p id="modalPatchType" class="text-xl"></p>
+        </div>
+    </div>
+
+
     <script>
-        // --- Basic Interactivity Mockup ---
+        // --- DATA ---
+        const patchDataStore = {
+            "patches": [
+                { "date": "2025-04-15", "hero": ["ana"], "content": "治疗生物手雷冷却时间从12秒减少到10秒", "patchType": "buff" },
+                { "date": "2025-04-15", "hero": ["kiriko"], "content": "苦无伤害从40减少到35", "patchType": "nerf" },
+                { "date": "2025-04-20", "hero": ["cassidy"], "content": "闪光弹眩晕时间从0.8秒增加到1秒", "patchType": "buff" },
+                { "date": "2025-04-25", "hero": ["genji", "hanzo"], "content": "所有英雄基础生命值增加50点", "patchType": "update" },
+                { "date": "2025-05-01", "hero": ["soldier-76"], "content": "螺旋飞弹冷却时间从6秒增加到8秒", "patchType": "nerf" },
+                { "date": "2025-05-01", "hero": ["sojourn"], "content": "电磁炮充能速度提升10%", "patchType": "buff" },
+                { "date": "2025-03-10", "hero": ["reinhardt"], "content": "火箭重锤伤害从85点提高到90点。", "patchType": "buff" },
+                { "date": "2025-03-10", "hero": ["tracer"], "content": "脉冲双枪的伤害衰减距离从13米调整为15米。", "patchType": "buff" },
+                { "date": "2025-03-15", "hero": ["widowmaker"], "content": "红外侦测（终极技能）的消耗增加15%。", "patchType": "nerf" },
+                { "date": "2025-03-15", "hero": ["mercy"], "content": "守护天使的冷却时间从1.5秒增加到2秒。", "patchType": "nerf" },
+                { "date": "2025-03-20", "hero": ["dva", "winston", "wrecking-ball"], "content": "重装英雄的临时生命值加成从150点降低至100点（角色切换时）。", "patchType": "nerf" },
+                { "date": "2025-03-20", "hero": ["all"], "content": "所有支援英雄在未受伤害1秒后，会获得每秒15点的被动治疗效果。", "patchType": "update" }
+            ].sort((a, b) => new Date(b.date) - new Date(a.date))
+        };
 
-        const heroCards = document.querySelectorAll('.hero-card');
-        const statButtons = document.querySelectorAll('.stat-button');
-        const selectedHeroNameSpans = document.querySelectorAll('#selected-hero-name, #selected-hero-name-notes'); // Target all spans needing hero name
-        const patchNoteEntries = document.querySelectorAll('.patch-note-entry');
-        const noPatchNotesMessage = document.getElementById('no-patch-notes');
+        const heroesData = [ 
+            { id: 'dva', name: 'D.Va', role: 'tank', icon: 'https://placehold.co/70x70/FF9B00/121826?text=DVa&font=Inter' },
+            { id: 'doomfist', name: '破坏铁拳', role: 'tank', icon: 'https://placehold.co/70x70/7A0000/E2E8F0?text=DF&font=Inter' },
+            { id: 'junker-queen', name: '渣客女王', role: 'tank', icon: 'https://placehold.co/70x70/D9BF77/121826?text=JQ&font=Inter' },
+            { id: 'orisa', name: '奥丽莎', role: 'tank', icon: 'https://placehold.co/70x70/4F9C00/E2E8F0?text=OR&font=Inter' },
+            { id: 'ramattra', name: '拉玛刹', role: 'tank', icon: 'https://placehold.co/70x70/7B4F9C/E2E8F0?text=RM&font=Inter' },
+            { id: 'reinhardt', name: '莱因哈特', role: 'tank', icon: 'https://placehold.co/70x70/ADB5BD/121826?text=RH&font=Inter' },
+            { id: 'roadhog', name: '路霸', role: 'tank', icon: 'https://placehold.co/70x70/B07C5A/E2E8F0?text=RD&font=Inter' },
+            { id: 'sigma', name: '西格玛', role: 'tank', icon: 'https://placehold.co/70x70/34568B/E2E8F0?text=SG&font=Inter' },
+            { id: 'winston', name: '温斯顿', role: 'tank', icon: 'https://placehold.co/70x70/E0E0E0/121826?text=WN&font=Inter' },
+            { id: 'wrecking-ball', name: '破坏球', role: 'tank', icon: 'https://placehold.co/70x70/FFA500/121826?text=WB&font=Inter' },
+            { id: 'zarya', name: '查莉娅', role: 'tank', icon: 'https://placehold.co/70x70/FF4081/E2E8F0?text=ZR&font=Inter' },
+            { id: 'ashe', name: '艾什', role: 'damage', icon: 'https://placehold.co/70x70/8B0000/E2E8F0?text=Ashe&font=Inter' },
+            { id: 'bastion', name: '堡垒', role: 'damage', icon: 'https://placehold.co/70x70/FFD700/121826?text=BS&font=Inter' },
+            { id: 'cassidy', name: '卡西迪', role: 'damage', icon: 'https://placehold.co/70x70/A0522D/E2E8F0?text=CS&font=Inter' },
+            { id: 'echo', name: '回声', role: 'damage', icon: 'https://placehold.co/70x70/00FFFF/121826?text=Echo&font=Inter' },
+            { id: 'genji', name: '源氏', role: 'damage', icon: 'https://placehold.co/70x70/90EE90/121826?text=GJ&font=Inter' },
+            { id: 'hanzo', name: '半藏', role: 'damage', icon: 'https://placehold.co/70x70/ADD8E6/121826?text=HZ&font=Inter' },
+            { id: 'junkrat', name: '狂鼠', role: 'damage', icon: 'https://placehold.co/70x70/FFA500/121826?text=JR&font=Inter' },
+            { id: 'mei', name: '美', role: 'damage', icon: 'https://placehold.co/70x70/ADD8E6/121826?text=Mei&font=Inter' },
+            { id: 'pharah', name: '法老之鹰', role: 'damage', icon: 'https://placehold.co/70x70/00008B/E2E8F0?text=PH&font=Inter' },
+            { id: 'reaper', name: '死神', role: 'damage', icon: 'https://placehold.co/70x70/111827/E2E8F0?text=RP&font=Inter' },
+            { id: 'sojourn', name: '索杰恩', role: 'damage', icon: 'https://placehold.co/70x70/007FFF/E2E8F0?text=SJ&font=Inter' },
+            { id: 'soldier-76', name: '士兵：76', role: 'damage', icon: 'https://placehold.co/70x70/4682B4/E2E8F0?text=S76&font=Inter' },
+            { id: 'sombra', name: '黑影', role: 'damage', icon: 'https://placehold.co/70x70/800080/E2E8F0?text=SM&font=Inter' },
+            { id: 'symmetra', name: '秩序之光', role: 'damage', icon: 'https://placehold.co/70x70/87CEEB/121826?text=SY&font=Inter' },
+            { id: 'torbjorn', name: '托比昂', role: 'damage', icon: 'https://placehold.co/70x70/FF4500/E2E8F0?text=TR&font=Inter' },
+            { id: 'tracer', name: '猎空', role: 'damage', icon: 'https://placehold.co/70x70/FFAE00/121826?text=TC&font=Inter' },
+            { id: 'widowmaker', name: '黑百合', role: 'damage', icon: 'https://placehold.co/70x70/4B0082/E2E8F0?text=WM&font=Inter' },
+            { id: 'ana', name: '安娜', role: 'support', icon: 'https://placehold.co/70x70/708090/E2E8F0?text=Ana&font=Inter' },
+            { id: 'baptiste', name: '巴蒂斯特', role: 'support', icon: 'https://placehold.co/70x70/008080/E2E8F0?text=BP&font=Inter' },
+            { id: 'brigitte', name: '布里吉塔', role: 'support', icon: 'https://placehold.co/70x70/FFD700/121826?text=BG&font=Inter' },
+            { id: 'illari', name: '伊拉锐', role: 'support', icon: 'https://placehold.co/70x70/FF8C00/E2E8F0?text=IL&font=Inter' },
+            { id: 'kiriko', name: '雾子', role: 'support', icon: 'https://placehold.co/70x70/FFB6C1/121826?text=KR&font=Inter' },
+            { id: 'lifeweaver', name: '生命之梭', role: 'support', icon: 'https://placehold.co/70x70/EE82EE/121826?text=LW&font=Inter' },
+            { id: 'lucio', name: '卢西奥', role: 'support', icon: 'https://placehold.co/70x70/00FF00/121826?text=LC&font=Inter' },
+            { id: 'mercy', name: '天使', role: 'support', icon: 'https://placehold.co/70x70/FFFACD/121826?text=MC&font=Inter' },
+            { id: 'moira', name: '莫伊拉', role: 'support', icon: 'https://placehold.co/70x70/8A2BE2/E2E8F0?text=MR&font=Inter' },
+            { id: 'zenyatta', name: '禅雅塔', role: 'support', icon: 'https://placehold.co/70x70/FFFF00/121826?text=ZN&font=Inter' }
+        ];
 
-        // Function to handle hero selection
-        function selectHero(selectedCard) {
-            // Remove active class from all cards
-            heroCards.forEach(card => card.classList.remove('active', 'border-blue-500', 'shadow-lg'));
-            // Add active class to the selected card
-            selectedCard.classList.add('active', 'border-blue-500', 'shadow-lg');
-            // Update hero name display
-            const heroName = selectedCard.querySelector('span').textContent;
-            selectedHeroNameSpans.forEach(span => span.textContent = heroName); // Update all spans
-            // --- In a real app: Fetch and update chart/comparison/patch data for the selected hero ---
-            console.log(`Selected Hero: ${heroName}`);
-            // Mock showing relevant patch notes (example logic)
-            showRelevantPatchNotes();
-        }
+        // --- CHART INSTANCES & STATE ---
+        let winRateChart, pickRateChart, kdaChart;
+        let selectedHeroId = null;
 
-        // Function to handle statistic selection
-        function selectStat(selectedButton) {
-            // Remove active class from all stat buttons
-            statButtons.forEach(button => button.classList.remove('active', 'bg-blue-500', 'text-white'));
-            // Add active class to the selected button
-            selectedButton.classList.add('active', 'bg-blue-500', 'text-white');
-            // --- In a real app: Fetch and update chart data for the selected statistic ---
-            console.log(`Selected Stat: ${selectedButton.textContent}`);
-        }
+        // --- DOM ELEMENTS ---
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+        const sidebarToggleText = sidebarToggleBtn.querySelector('.sidebar-toggle-text');
+        const dashboardView = document.getElementById('dashboardView');
+        const patchesView = document.getElementById('patchesView');
+        const btnViewDashboard = document.getElementById('btnViewDashboard');
+        const btnViewPatches = document.getElementById('btnViewPatches');
+        const heroGridContainer = document.getElementById('heroGridContainer');
+        const heroNameDisplay = document.getElementById('heroNameDisplay');
+        const heroSpecificDataSection = document.getElementById('heroSpecificData');
+        const noHeroSelectedSection = document.getElementById('noHeroSelected');
+        const heroPatchHistoryContainer = document.getElementById('heroPatchHistory');
+        const allPatchesListContainer = document.getElementById('allPatchesList');
+        const patchSearchInput = document.getElementById('patchSearch');
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+        const presetLastTwoPatchesBtn = document.getElementById('presetTimeLastTwoPatches');
+        const presetLastMonthBtn = document.getElementById('presetTimeLastMonth');
+        // Apply Filters Button is removed
+        const patchDetailModal = document.getElementById('patchDetailModal');
+        const modalPatchDate = document.getElementById('modalPatchDate');
+        const modalPatchContent = document.getElementById('modalPatchContent');
+        const modalHeroList = document.getElementById('modalHeroList');
+        const modalPatchType = document.getElementById('modalPatchType');
 
-        // Function to show specific patch notes (e.g., when clicking a marker)
-        function showPatchNotes(patchId) {
-            console.log(`Showing notes for: ${patchId}`);
-            patchNoteEntries.forEach(entry => {
-                if (entry.id === patchId) {
-                    entry.classList.remove('hidden');
-                    entry.classList.add('border-yellow-400'); // Highlight the clicked one
-                    // Scroll to the note
-                    entry.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                } else {
-                    entry.classList.add('hidden'); // Hide others for clarity, or adjust as needed
-                    entry.classList.remove('border-yellow-400');
-                }
-            });
-             noPatchNotesMessage.classList.add('hidden'); // Hide the 'no notes' message
-        }
-
-        // Mock function to show patch notes relevant to the selected hero/time (called on hero select)
-        function showRelevantPatchNotes() {
-            // --- In a real app: This logic would filter notes based on selected hero and time range ---
-            // For this demo, let's just show the example notes if "Hero One" is selected
-            const currentHero = document.getElementById('selected-hero-name').textContent;
-            let notesFound = false;
-
-            patchNoteEntries.forEach(entry => {
-                // Simple mock: only show notes for "Hero One"
-                if (currentHero === 'Hero One' && (entry.id === 'patch-10-5' || entry.id === 'patch-10-8')) {
-                     entry.classList.remove('hidden');
-                     entry.classList.remove('border-yellow-400'); // Remove highlight if previously clicked
-                     notesFound = true;
-                } else {
-                    entry.classList.add('hidden');
-                    entry.classList.remove('border-yellow-400');
-                }
-            });
-
-            // Show/hide the 'no notes' message
-            if (notesFound) {
-                noPatchNotesMessage.classList.add('hidden');
-            } else {
-                noPatchNotesMessage.classList.remove('hidden');
-            }
-        }
-
-
-        // Initial setup
+        // --- INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Set initial active states based on default selections
-            if (heroCards.length > 0) {
-                 selectHero(heroCards[0]); // Select the first hero by default
+            if (typeof ChartAnnotation !== 'undefined') {
+                Chart.register(ChartAnnotation);
+            } else {
+                console.error("ChartAnnotation plugin not loaded.");
             }
-             if (statButtons.length > 0) {
-                selectStat(statButtons[0]); // Select the first stat by default
+
+            document.getElementById('sidebarCurrentYear').textContent = new Date().getFullYear();
+            document.getElementById('footerCurrentYear').textContent = new Date().getFullYear();
+            
+            // Sidebar toggle functionality
+            sidebarToggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+                if (sidebar.classList.contains('collapsed')) {
+                    sidebarToggleText.textContent = '展开';
+                } else {
+                    sidebarToggleText.textContent = '收起侧栏';
+                }
+            });
+            // Initialize sidebar state based on screen size (optional: could use localStorage too)
+            if (window.innerWidth <= 768) {
+                 sidebar.classList.add('collapsed');
+                 sidebarToggleText.textContent = '展开';
             }
-            showRelevantPatchNotes(); // Show initial patch notes
+
+
+            populateHeroGrid();
+            populateAllPatchesList(patchDataStore.patches);
+            setDefaultDates(); // Set default dates first
+
+            // Add event listeners for auto-applying filters
+            startDateInput.addEventListener('change', autoApplyFilters);
+            endDateInput.addEventListener('change', autoApplyFilters);
+            presetLastTwoPatchesBtn.addEventListener('click', setDatePresetLastTwoPatches);
+            presetLastMonthBtn.addEventListener('click', setDatePresetLastMonth);
+
+
+            btnViewDashboard.addEventListener('click', () => showView('dashboard'));
+            btnViewPatches.addEventListener('click', () => showView('patches'));
+            patchSearchInput.addEventListener('input', handlePatchSearch);
+            
+            // Initial check if data should be loaded (e.g. if URL params pre-fill hero/dates)
+            // For now, user must select a hero first.
         });
 
-    </script>
+        function autoApplyFilters() {
+            if (selectedHeroId && startDateInput.value && endDateInput.value) {
+                loadHeroData(selectedHeroId);
+            } else if (!selectedHeroId) {
+                // If no hero is selected, ensure the "no hero selected" message is visible
+                // and charts are cleared if they were previously shown.
+                noHeroSelectedSection.classList.remove('hidden');
+                heroSpecificDataSection.classList.add('hidden');
+                [winRateChart, pickRateChart, kdaChart].forEach(chart => chart?.destroy());
+            }
+        }
 
+
+        // --- VIEW MANAGEMENT ---
+        function showView(viewName) {
+            dashboardView.classList.add('hidden');
+            patchesView.classList.add('hidden');
+            btnViewDashboard.classList.remove('tab-active');
+            btnViewPatches.classList.remove('tab-active');
+
+            if (viewName === 'dashboard') {
+                dashboardView.classList.remove('hidden');
+                btnViewDashboard.classList.add('tab-active');
+            } else if (viewName === 'patches') {
+                patchesView.classList.remove('hidden');
+                btnViewPatches.classList.add('tab-active');
+            }
+        }
+
+        // --- DATA POPULATION & RENDERING ---
+        function populateHeroGrid() {
+            heroesData.forEach(hero => {
+                const heroDiv = document.createElement('div');
+                heroDiv.classList.add('hero-portrait', 'bg-gray-700/50', 'flex', 'items-center', 'justify-center');
+                heroDiv.dataset.heroId = hero.id;
+                
+                const img = document.createElement('img');
+                img.src = hero.icon;
+                img.alt = hero.name;
+                img.title = hero.name;
+                img.classList.add('w-full', 'h-full', 'object-cover');
+                heroDiv.appendChild(img);
+
+                heroDiv.addEventListener('click', () => handleHeroSelection(hero.id, heroDiv));
+                heroGridContainer.appendChild(heroDiv);
+            });
+        }
+
+        function populateHeroPatchHistory(patches) {
+            heroPatchHistoryContainer.innerHTML = '';
+            if (patches.length === 0) {
+                heroPatchHistoryContainer.innerHTML = '<p class="text-gray-500 p-4 text-center">在此时间段内没有找到该英雄的相关更新。</p>';
+                return;
+            }
+            patches.forEach(patch => heroPatchHistoryContainer.appendChild(createPatchCard(patch)));
+        }
+
+        function populateAllPatchesList(patchesToDisplay) {
+            allPatchesListContainer.innerHTML = '';
+            if (patchesToDisplay.length === 0) {
+                allPatchesListContainer.innerHTML = '<p class="text-gray-500 p-4 text-center">没有找到匹配的更新记录。</p>';
+                return;
+            }
+            patchesToDisplay.forEach(patch => allPatchesListContainer.appendChild(createPatchCard(patch, true)));
+        }
+
+        function createPatchCard(patch, isDetailedView = false) {
+            const card = document.createElement('div');
+            card.classList.add('ow-card', 'p-4', 'rounded-lg', 'patch-card', getPatchCardClass(patch.patchType));
+
+            const dateEl = document.createElement('p');
+            dateEl.classList.add('text-sm', 'text-gray-400', 'mb-1.5');
+            dateEl.textContent = patch.date;
+
+            const contentEl = document.createElement('p');
+            contentEl.classList.add('text-gray-200', 'mb-2', 'leading-relaxed', 'text-sm');
+            contentEl.textContent = patch.content;
+
+            const typeEl = document.createElement('p');
+            typeEl.classList.add('font-semibold', 'text-xs', getPatchTypeClass(patch.patchType), 'uppercase', 'tracking-wider');
+            typeEl.textContent = patch.patchType;
+
+            card.appendChild(dateEl);
+            card.appendChild(contentEl);
+
+            if (isDetailedView) {
+                const affectedHeroesEl = document.createElement('div');
+                affectedHeroesEl.classList.add('text-xs', 'text-gray-500', 'mt-2.5');
+                const heroNames = patch.hero.map(heroId => {
+                    if (heroId === 'all') return '所有英雄';
+                    const heroData = heroesData.find(h => h.id === heroId);
+                    return heroData ? heroData.name : heroId;
+                }).join(', ');
+                affectedHeroesEl.innerHTML = `<strong class="text-gray-400">影响:</strong> ${heroNames}`;
+                card.appendChild(affectedHeroesEl);
+            }
+            card.appendChild(typeEl);
+            card.style.cursor = 'pointer';
+            card.addEventListener('click', () => showPatchDetailModal(patch));
+            return card;
+        }
+
+        // --- EVENT HANDLERS ---
+        function handleHeroSelection(heroId, clickedDiv) {
+            selectedHeroId = heroId;
+            document.querySelectorAll('.hero-portrait').forEach(el => el.classList.remove('selected'));
+            clickedDiv.classList.add('selected');
+            autoApplyFilters(); // Auto-apply when hero is selected
+        }
+        // Apply Filters button and its handler are removed
+
+        function handlePatchSearch(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredPatches = patchDataStore.patches.filter(patch =>
+                patch.content.toLowerCase().includes(searchTerm) ||
+                patch.hero.some(h => {
+                    const heroName = (heroesData.find(hero => hero.id === h)?.name || h).toLowerCase();
+                    return heroName.includes(searchTerm);
+                })
+            );
+            populateAllPatchesList(filteredPatches);
+        }
+
+        // --- DATA LOADING & PROCESSING ---
+        function loadHeroData(heroId) {
+            const hero = heroesData.find(h => h.id === heroId);
+            if (!hero) return;
+
+            const startDateVal = startDateInput.value;
+            const endDateVal = endDateInput.value;
+
+            if (!startDateVal || !endDateVal) {
+                // Don't show alert if dates are not set yet, just don't load data
+                // Or, if you want to prompt, ensure it's not annoying on first load
+                // For now, we assume autoApplyFilters handles the "no hero selected" or "no dates" state.
+                heroSpecificDataSection.classList.add('hidden');
+                noHeroSelectedSection.classList.remove('hidden');
+                noHeroSelectedSection.querySelector('p.text-xl').textContent = "请设置有效的开始和结束日期。";
+                return;
+            }
+            noHeroSelectedSection.querySelector('p.text-xl').textContent = "请先选择一位英雄并设置日期以查看数据。"; // Reset message
+
+            heroNameDisplay.textContent = hero.name;
+            heroSpecificDataSection.classList.remove('hidden');
+            noHeroSelectedSection.classList.add('hidden');
+
+
+            const startDate = new Date(startDateVal + "T00:00:00");
+            const endDate = new Date(endDateVal + "T23:59:59");
+
+            if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+                alert("日期格式无效。请确保选择了有效的日期。");
+                heroSpecificDataSection.classList.add('hidden');
+                noHeroSelectedSection.classList.remove('hidden');
+                return;
+            }
+            if (startDate > endDate) {
+                alert("开始日期不能晚于结束日期。");
+                heroSpecificDataSection.classList.add('hidden');
+                noHeroSelectedSection.classList.remove('hidden');
+                return;
+            }
+
+            const relevantPatches = patchDataStore.patches.filter(patch => {
+                const patchDate = new Date(patch.date + "T00:00:00");
+                return (patch.hero.includes(heroId) || patch.hero.includes('all')) &&
+                       patchDate >= startDate && patchDate <= endDate;
+            });
+
+            populateHeroPatchHistory(relevantPatches.sort((a,b) => new Date(b.date) - new Date(a.date)));
+            generateCharts(heroId, startDate, endDate, relevantPatches);
+        }
+
+        // --- DATE MANAGEMENT ---
+        function setDefaultDates() {
+            const today = new Date();
+            const oneMonthAgo = new Date(today);
+            oneMonthAgo.setMonth(today.getMonth() - 1);
+            endDateInput.value = today.toISOString().split('T')[0];
+            startDateInput.value = oneMonthAgo.toISOString().split('T')[0];
+        }
+
+        function setDatePresetLastTwoPatches() {
+            const uniquePatchDates = [...new Set(patchDataStore.patches.map(p => p.date))]
+                                     .sort((a, b) => new Date(b) - new Date(a));
+            if (uniquePatchDates.length >= 2) {
+                endDateInput.value = uniquePatchDates[0];
+                startDateInput.value = uniquePatchDates[1];
+            } else if (uniquePatchDates.length === 1) {
+                const lastPatchDate = new Date(uniquePatchDates[0] + "T00:00:00");
+                const oneWeekBefore = new Date(lastPatchDate);
+                oneWeekBefore.setDate(lastPatchDate.getDate() - 7);
+                startDateInput.value = oneWeekBefore.toISOString().split('T')[0];
+                endDateInput.value = uniquePatchDates[0];
+            } else {
+                alert("没有足够的更新数据来设置此预设。将使用默认日期范围。");
+                setDefaultDates();
+            }
+            autoApplyFilters(); // Auto-apply after setting dates
+        }
+
+        function setDatePresetLastMonth() {
+            setDefaultDates();
+            autoApplyFilters(); // Auto-apply after setting dates
+        }
+
+        // --- CHART GENERATION ---
+        function generateCharts(heroId, startDate, endDate, patchesForAnnotations) {
+            const chartLabels = generateDateLabels(startDate, endDate); 
+
+            [winRateChart, pickRateChart, kdaChart].forEach(chart => chart?.destroy());
+
+            const mockData = (min, max) => chartLabels.map(() => Math.random() * (max - min) + min);
+
+            const annotations = {};
+            patchesForAnnotations.forEach(patch => {
+                const patchDateObj = new Date(patch.date + "T00:00:00");
+                // Find the closest label if exact match isn't found (more robust for varied date label formats)
+                let labelIndex = -1;
+                let minDiff = Infinity;
+
+                chartLabels.forEach((labelStr, index) => {
+                    // This parsing is tricky. Assuming labels are 'M月D日' or 'YY年M月'
+                    // A more robust way would be to store Date objects with labels if possible.
+                    // For now, direct string match or simple parsing.
+                    const labelDateStr = patchDateObj.toLocaleDateString('zh-CN-u-ca-chinese', { month: 'short', day: 'numeric' });
+                    if (labelStr === labelDateStr) { // Try direct match for daily/weekly labels
+                        labelIndex = index;
+                        return;
+                    }
+                    // Add more sophisticated date parsing/comparison if needed for monthly labels
+                });
+                
+                // Fallback or refined logic for finding index if direct match fails
+                if (labelIndex === -1) {
+                     // Attempt to find the first label that is on or after the patch date
+                    for (let i = 0; i < chartLabels.length; i++) {
+                        // This requires chartLabels to be consistently parseable or to store actual dates.
+                        // For simplicity, we'll stick to the direct match for now.
+                        // If a patch date doesn't exactly match a chart label, it won't be annotated.
+                        // This can be improved by making generateDateLabels return {label: string, date: Date} objects.
+                    }
+                }
+                const patchDateStr = patchDateObj.toLocaleDateString('zh-CN-u-ca-chinese', { month: 'short', day: 'numeric' }); // Use consistent format
+                labelIndex = chartLabels.indexOf(patchDateStr);
+
+
+                if (labelIndex !== -1) {
+                    let borderColor = '#f59e0b'; 
+                    if (patch.patchType === 'buff') borderColor = '#22c55e';
+                    if (patch.patchType === 'nerf') borderColor = '#ef4444';
+
+                    annotations[`patch-${patch.date}-${patch.hero.join('-')}-${labelIndex}`] = { 
+                        type: 'line',
+                        scaleID: 'x',
+                        value: labelIndex, 
+                        borderColor: borderColor,
+                        borderWidth: 2,
+                        borderDash: [5, 5], 
+                        label: {
+                            enabled: true,
+                            content: patch.patchType.charAt(0).toUpperCase(), 
+                            position: 'start', 
+                            backgroundColor: 'rgba(17, 24, 39, 0.7)',
+                            font: { size: 10, weight: 'bold' },
+                            color: borderColor, // Label color matches line color
+                            padding: 4,
+                            borderRadius: 4,
+                            yAdjust: -12 
+                        },
+                        patchDetails: patch.content 
+                    };
+                }
+            });
+
+
+            const chartOptions = (yLabel, suggestedMin, suggestedMax, chartAnnotations) => ({
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: yLabel.includes('Rate'),
+                        min: suggestedMin,
+                        max: suggestedMax,
+                        ticks: { color: '#9ca3af', font: { size: 11 } },
+                        grid: { color: 'rgba(55, 65, 81, 0.6)' } // Darker grid lines
+                    },
+                    x: { 
+                        ticks: { color: '#9ca3af', maxRotation: 45, minRotation: 30, font: { size: 11 } },
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#111827', titleColor: '#e5e7eb', bodyColor: '#d1d5db',
+                        borderColor: '#ff9c00', borderWidth: 1, padding: 12,
+                        cornerRadius: 6,
+                        boxPadding: 4,
+                        callbacks: {
+                            label: ctx => `${ctx.dataset.label || ''}: ${yLabel.includes('Rate') ? (ctx.parsed.y * 100).toFixed(1) + '%' : ctx.parsed.y.toFixed(2)}`
+                        }
+                    },
+                    annotation: { 
+                        annotations: chartAnnotations,
+                        drawTime: 'afterDatasetsDraw' 
+                    }
+                },
+                interaction: { mode: 'index', intersect: false, axis: 'x' },
+                elements: { line: { tension: 0.35, borderWidth: 2.5 }, point: { radius: 0, hoverRadius: 5, hitRadius: 10, hoverBorderWidth: 2, hoverBackgroundColor: '#fff' } }
+            });
+
+            winRateChart = new Chart(document.getElementById('winRateChart').getContext('2d'), {
+                type: 'line',
+                data: { labels: chartLabels, datasets: [{ label: '胜率', data: mockData(0.4, 0.6), borderColor: '#22c55e', backgroundColor: 'rgba(34, 197, 94, 0.1)', fill: true, pointBorderColor: '#22c55e' }] },
+                options: chartOptions('Win Rate %', 0.35, 0.65, annotations)
+            });
+            pickRateChart = new Chart(document.getElementById('pickRateChart').getContext('2d'), {
+                type: 'line',
+                data: { labels: chartLabels, datasets: [{ label: '选取率', data: mockData(0.02, 0.15), borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.1)', fill: true, pointBorderColor: '#f59e0b' }] },
+                options: chartOptions('Pick Rate %', 0, 0.20, annotations)
+            });
+            kdaChart = new Chart(document.getElementById('kdaChart').getContext('2d'), {
+                type: 'line',
+                data: { labels: chartLabels, datasets: [{ label: 'KDA', data: mockData(1.5, 4.0), borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, pointBorderColor: '#3b82f6' }] },
+                options: chartOptions('KDA', 1.0, 4.5, annotations)
+            });
+        }
+
+        function generateDateLabels(startDate, endDate) {
+            const labels = [];
+            let currentDate = new Date(startDate); 
+            const end = new Date(endDate);       
+
+            if (currentDate > end) return [startDate.toLocaleDateString('zh-CN-u-ca-chinese', { month: 'short', day: 'numeric' })];
+
+            const diffTime = Math.abs(end - currentDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+            if (diffDays <= 1) { // Single day
+                 labels.push(currentDate.toLocaleDateString('zh-CN-u-ca-chinese', { month: 'short', day: 'numeric' }));
+            } else if (diffDays <= 14) { // Daily for up to 2 weeks
+                for (let i = 0; i < diffDays; i++) {
+                    labels.push(new Date(currentDate).toLocaleDateString('zh-CN-u-ca-chinese', { month: 'short', day: 'numeric' }));
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+            } else if (diffDays <= 90) { // Weekly for up to ~3 months
+                let tempDate = new Date(startDate);
+                while(tempDate <= end) {
+                    labels.push(new Date(tempDate).toLocaleDateString('zh-CN-u-ca-chinese', { month: 'short', day: 'numeric' }));
+                    tempDate.setDate(tempDate.getDate() + 7);
+                }
+                 // Ensure the end date label is included if the loop didn't catch it and it's not already the last one
+                const lastGeneratedLabelDateStr = labels[labels.length -1];
+                const endDateStr = new Date(end).toLocaleDateString('zh-CN-u-ca-chinese', { month: 'short', day: 'numeric' });
+                if (labels.length > 0 && lastGeneratedLabelDateStr !== endDateStr) {
+                    // A more robust way to check if the last label date is before end date.
+                    // This requires parsing lastGeneratedLabelDateStr back to a Date object, which is complex due to localization.
+                    // For simplicity, if the string doesn't match and it's a weekly or monthly view, we might add the end date.
+                    // However, this can lead to uneven spacing.
+                    // A better approach: if the last tempDate was before end, add end.
+                    if (new Date(startDate.getFullYear(), new Date(labels[labels.length -1]).getMonth(), new Date(labels[labels.length -1]).getDate()) < end) {
+                       // labels.push(endDateStr); // This might add duplicates if not careful, rely on Set below
+                    }
+                }
+            } else { // Monthly for more than 3 months
+                 let tempDate = new Date(startDate.getFullYear(), startDate.getMonth(), 1); // Start from the first of the month
+                 while(tempDate <= end) {
+                    labels.push(new Date(tempDate).toLocaleDateString('zh-CN-u-ca-chinese', { year:'2-digit', month: 'short' }));
+                    tempDate.setMonth(tempDate.getMonth() + 1);
+                 }
+            }
+            // Ensure unique labels and that the end date is present if the range is > 1 day and not perfectly hit by steps
+            const finalLabels = [...new Set(labels.length > 0 ? labels : [startDate.toLocaleDateString('zh-CN-u-ca-chinese', { month: 'short', day: 'numeric' })])];
+            const endDateFormatted = new Date(end).toLocaleDateString('zh-CN-u-ca-chinese', { month: 'short', day: 'numeric' });
+            const endDateFormattedMonthly = new Date(end).toLocaleDateString('zh-CN-u-ca-chinese', { year:'2-digit', month: 'short' });
+
+            if (diffDays > 1) {
+                const lastLabelInFinals = finalLabels[finalLabels.length - 1];
+                if (diffDays <= 90 && lastLabelInFinals !== endDateFormatted) {
+                    // Check if endDateFormatted is already there (e.g. if it was the only label)
+                    if (!finalLabels.includes(endDateFormatted)) {
+                       // finalLabels.push(endDateFormatted); // This can make the last step uneven.
+                    }
+                } else if (diffDays > 90 && lastLabelInFinals !== endDateFormattedMonthly) {
+                     if (!finalLabels.includes(endDateFormattedMonthly)) {
+                       // finalLabels.push(endDateFormattedMonthly);
+                    }
+                }
+            }
+            return finalLabels;
+        }
+
+
+        // --- UTILITY FUNCTIONS ---
+        function getPatchTypeClass(patchType) {
+            const classes = { buff: 'ow-buff', nerf: 'ow-nerf', update: 'ow-update' };
+            return classes[patchType] || 'ow-update';
+        }
+        function getPatchCardClass(patchType) {
+            const classes = { buff: 'patch-buff', nerf: 'patch-nerf', update: 'patch-update' };
+            return classes[patchType] || 'patch-update';
+        }
+
+        // --- MODAL FUNCTIONS ---
+        function showPatchDetailModal(patch) {
+            modalPatchDate.textContent = `日期: ${patch.date}`;
+            modalPatchContent.textContent = patch.content;
+            const heroNames = patch.hero.map(id => heroesData.find(h => h.id === id)?.name || (id === 'all' ? '所有英雄' : id)).join(', ');
+            modalHeroList.textContent = heroNames;
+            modalPatchType.textContent = `类型: ${patch.patchType.toUpperCase()}`;
+            modalPatchType.className = `text-xl font-semibold ${getPatchTypeClass(patch.patchType)}`;
+            patchDetailModal.style.display = "block";
+        }
+        function closeModal() { patchDetailModal.style.display = "none"; }
+        window.onclick = event => { if (event.target == patchDetailModal) closeModal(); }
+
+    </script>
 </body>
 </html>
