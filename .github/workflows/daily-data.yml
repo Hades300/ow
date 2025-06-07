@@ -22,7 +22,7 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
-        run: npm install axios
+        run: npm install axios jsdom
 
       - name: Fetch hero data
         run: |
@@ -45,24 +45,39 @@ jobs:
               }
             }
             
-            return seasons[seasons.length - 1].season; // 默认返回最新赛季
+            return seasons[seasons.length - 1].season;
           }
 
-          function updateMergedData(newData, date) {
+          function optimizeHeroData(heroData) {
+            return heroData.map(hero => ({
+              i: hero.hero_id,           // id
+              t: hero.hero_type,         // type
+              s: hero.selection_ratio,   // selection
+              w: hero.win_ratio,         // win
+              k: hero.kda,               // kda
+              d: hero.ds                 // date
+            }));
+          }
+
+          function updateMergedData(newData) {
             const mergedFilePath = path.join("data", "merged_data.json");
             let mergedData = {};
 
-            // 如果合并文件存在，读取现有数据
             if (fs.existsSync(mergedFilePath)) {
               mergedData = JSON.parse(fs.readFileSync(mergedFilePath, "utf8"));
             }
 
-            // 更新或添加当天的数据
-            mergedData[date] = newData;
+            // Extract server date from the first hero entry
+            const serverDate = newData.data.data[0].ds;
+            
+            // Store optimized data
+            mergedData[serverDate] = {
+              s: newData.season,
+              h: optimizeHeroData(newData.data.data)
+            };
 
-            // 写入合并后的数据
             fs.writeFileSync(mergedFilePath, JSON.stringify(mergedData, null, 2));
-            console.log(`Updated merged data file with data for ${date}`);
+            console.log(`Updated merged data file with data for ${serverDate}`);
           }
 
           async function fetchData() {
@@ -83,26 +98,25 @@ jobs:
                 }
               });
 
-              const date = new Date().toISOString().split("T")[0];
+              const dataToSave = {
+                season: currentSeason,
+                data: response.data
+              };
+
+              // Save raw data with server timestamp
+              const serverDate = response.data.data[0].ds;
               const dataDir = path.join("data", "daily");
-              const filePath = path.join(dataDir, `${date}.json`);
+              const filePath = path.join(dataDir, `${serverDate}.json`);
               
               if (!fs.existsSync(dataDir)) {
                 fs.mkdirSync(dataDir, { recursive: true });
               }
 
-              // 添加时间戳和赛季信息，确保数据幂等性
-              const dataToSave = {
-                timestamp: new Date().toISOString(),
-                season: currentSeason,
-                data: response.data
-              };
-
               fs.writeFileSync(filePath, JSON.stringify(dataToSave, null, 2));
-              console.log(`Successfully collected data for ${date} (Season ${currentSeason})`);
+              console.log(`Successfully collected data for ${serverDate} (Season ${currentSeason})`);
 
-              // 更新合并数据文件
-              updateMergedData(dataToSave, date);
+              // Update merged data file
+              updateMergedData(dataToSave);
             } catch (error) {
               console.error("Error fetching data:", error.message);
               process.exit(1);
@@ -112,12 +126,20 @@ jobs:
           fetchData();
           '
 
+      - name: Fetch patch notes
+        run: node scripts/fetch_patch_notes.cjs
+        continue-on-error: true
+
+      - name: Create debug directory
+        run: mkdir -p debug
+        continue-on-error: true
+
       - name: Commit and push if changed
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
-          git add data/daily/ data/merged_data.json
+          git add data/daily/ data/merged_data.json public/data/patch_notes.json
           git diff --quiet && git diff --staged --quiet || (
-            git commit -m "Update hero data $(date +'%Y-%m-%d')"
+            git commit -m "Update game data $(date +'%Y-%m-%d')"
             git push "https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
           )

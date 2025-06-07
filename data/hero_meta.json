@@ -8,7 +8,7 @@
     },
     {
       "hero_id": "kiriko",
-      "hero_name": "桐",
+      "hero_name": "雾子",
       "hero_icon": "/icons/kiriko.png",
       "hero_role": "support"
     },
@@ -26,7 +26,7 @@
     },
     {
       "hero_id": "soldier-76",
-      "hero_name": "士兵76",
+      "hero_name": "士兵：76",
       "hero_icon": "/icons/soldier-76.png",
       "hero_role": "damage"
     },
@@ -86,7 +86,7 @@
     },
     {
       "hero_id": "freja",
-      "hero_name": "芙蕾雅",
+      "hero_name": "弗蕾娅",
       "hero_icon": "/icons/freja.png",
       "hero_role": "damage"
     },
@@ -116,19 +116,19 @@
     },
     {
       "hero_id": "dva",
-      "hero_name": "D.Va",
+      "hero_name": "D.VA",
       "hero_icon": "/icons/dva.png",
       "hero_role": "tank"
     },
     {
       "hero_id": "hazard",
-      "hero_name": "哈萨德",
+      "hero_name": "骇灾",
       "hero_icon": "/icons/hazard.png",
       "hero_role": "tank"
     },
     {
       "hero_id": "venture",
-      "hero_name": "冒险家",
+      "hero_name": "探奇",
       "hero_icon": "/icons/venture.png",
       "hero_role": "damage"
     },

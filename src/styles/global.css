@@ -1,0 +1,126 @@
+@font-face {
+  font-family: 'BigNoodleTooOblique';
+  src: url('/fonts/bignoodletoo.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Koverwatch';
+  src: url('/fonts/koverwatch.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Dark Theme Overwatch Style */
+  --background: #0D1117;
+  --card-background: #161B22;
+  --card-background-hover: #21262D;
+  --text: #ffffff;
+  --secondary-text: #8B949E;
+  --primary: #f99e1c;
+  --primary-transparent: rgba(249, 158, 28, 0.2);
+  --secondary: #21262D;
+  --accent: #ff9e1c;
+  --border: #30363D;
+  --chart-grid: rgba(255, 255, 255, 0.1);
+  --success: #4ade80;
+  --warning: #f99e1c;
+  --error: #f87171;
+  --button-background: #21262D;
+  --button-background-hover: #30363D;
+  --button-text: #ffffff;
+  --input-background: #0D1117;
+  --input-border: #30363D;
+  --input-text: #ffffff;
+  --shadow: rgba(0, 0, 0, 0.3);
+}
+
+/* Overwatch UI Animations */
+@keyframes glow {
+  0% { box-shadow: 0 0 5px var(--primary-transparent); }
+  50% { box-shadow: 0 0 15px var(--primary-transparent); }
+  100% { box-shadow: 0 0 5px var(--primary-transparent); }
+}
+
+@keyframes hover-lift {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-2px); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+/* Global Styles */
+body {
+  font-family: "Koverwatch", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease;
+  background-color: var(--background);
+  color: var(--text);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "BigNoodleTooOblique", "Koverwatch", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+button {
+  font-family: "BigNoodleTooOblique", "Koverwatch", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+input {
+  font-family: "Koverwatch", sans-serif;
+  border: none;
+  outline: none;
+}
+
+input::placeholder {
+  color: var(--secondary-text);
+  opacity: 0.7;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--card-background);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+  transition: background-color 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-text);
+} 

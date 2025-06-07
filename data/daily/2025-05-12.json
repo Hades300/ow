@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-05-12T02:59:47.108Z",
+  "timestamp": "2025-05-14T02:58:24.985Z",
   "season": "16",
   "data": {
     "code": 0,
@@ -8,346 +8,346 @@
       {
         "hero_id": "ana",
         "hero_type": "3",
-        "selection_ratio": 7.52,
-        "win_ratio": 50.27,
-        "kda": 3.86,
-        "ds": "2025-05-10"
+        "selection_ratio": 7.55,
+        "win_ratio": 50.26,
+        "kda": 3.87,
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "kiriko",
         "hero_type": "3",
-        "selection_ratio": 6.87,
-        "win_ratio": 48.4,
+        "selection_ratio": 6.84,
+        "win_ratio": 48.37,
         "kda": 4.01,
-        "ds": "2025-05-10"
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "cassidy",
         "hero_type": "1",
-        "selection_ratio": 6.11,
-        "win_ratio": 49.52,
+        "selection_ratio": 6.13,
+        "win_ratio": 49.5,
         "kda": 2.55,
-        "ds": "2025-05-10"
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "genji",
         "hero_type": "1",
-        "selection_ratio": 5.3,
-        "win_ratio": 51.16,
+        "selection_ratio": 5.31,
+        "win_ratio": 51.18,
         "kda": 2.33,
-        "ds": "2025-05-10"
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "soldier-76",
         "hero_type": "1",
-        "selection_ratio": 5.22,
-        "win_ratio": 49.43,
+        "selection_ratio": 5.21,
+        "win_ratio": 49.35,
         "kda": 2.65,
-        "ds": "2025-05-10"
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "sojourn",
         "hero_type": "1",
-        "selection_ratio": 4.06,
-        "win_ratio": 45.83,
+        "selection_ratio": 4.02,
+        "win_ratio": 45.72,
         "kda": 2.5,
-        "ds": "2025-05-10"
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "juno",
         "hero_type": "3",
-        "selection_ratio": 3.96,
-        "win_ratio": 49.77,
+        "selection_ratio": 3.95,
+        "win_ratio": 49.8,
         "kda": 3.89,
-        "ds": "2025-05-10"
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "zenyatta",
         "hero_type": "3",
-        "selection_ratio": 3.35,
-        "win_ratio": 50.23,
+        "selection_ratio": 3.36,
+        "win_ratio": 50.26,
         "kda": 4.62,
-        "ds": "2025-05-10"
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "moira",
         "hero_type": "3",
-        "selection_ratio": 3.18,
-        "win_ratio": 47.53,
+        "selection_ratio": 3.17,
+        "win_ratio": 47.49,
         "kda": 4.65,
-        "ds": "2025-05-10"
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "sigma",
         "hero_type": "2",
-        "selection_ratio": 3.04,
-        "win_ratio": 51.75,
+        "selection_ratio": 3.06,
+        "win_ratio": 51.8,
         "kda": 3.91,
-        "ds": "2025-05-10"
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "ramattra",
         "hero_type": "2",
         "selection_ratio": 2.89,
-        "win_ratio": 50.24,
+        "win_ratio": 50.2,
         "kda": 3.55,
-        "ds": "2025-05-10"
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "ashe",
         "hero_type": "1",
         "selection_ratio": 2.85,
-        "win_ratio": 51.1,
+        "win_ratio": 51.11,
         "kda": 2.83,
-        "ds": "2025-05-10"
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "reaper",
         "hero_type": "1",
-        "selection_ratio": 2.84,
-        "win_ratio": 50.19,
+        "selection_ratio": 2.81,
+        "win_ratio": 50.03,
         "kda": 2.34,
-        "ds": "2025-05-10"
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "winston",
         "hero_type": "2",
         "selection_ratio": 2.48,
-        "win_ratio": 46.91,
+        "win_ratio": 46.97,
         "kda": 3.31,
-        "ds": "2025-05-10"
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "orisa",
         "hero_type": "2",
-        "selection_ratio": 2.39,
-        "win_ratio": 47.53,
-        "kda": 3.66,
-        "ds": "2025-05-10"
+        "selection_ratio": 2.47,
+        "win_ratio": 47.64,
+        "kda": 3.67,
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "brigitte",
         "hero_type": "3",
-        "selection_ratio": 2.34,
+        "selection_ratio": 2.33,
         "win_ratio": 50.69,
         "kda": 3.72,
-        "ds": "2025-05-10"
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "freja",
         "hero_type": "1",
-        "selection_ratio": 2.34,
-        "win_ratio": 48.06,
-        "kda": 2.27,
-        "ds": "2025-05-10"
+        "selection_ratio": 2.29,
+        "win_ratio": 48.34,
+        "kda": 2.29,
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "pharah",
         "hero_type": "1",
         "selection_ratio": 2.1,
-        "win_ratio": 50.06,
+        "win_ratio": 49.96,
         "kda": 2.48,
-        "ds": "2025-05-10"
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "mercy",
         "hero_type": "3",
-        "selection_ratio": 1.98,
-        "win_ratio": 50.43,
+        "selection_ratio": 1.96,
+        "win_ratio": 50.4,
         "kda": 3.56,
-        "ds": "2025-05-10"
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "dva",
         "hero_type": "2",
         "selection_ratio": 1.85,
-        "win_ratio": 50.41,
+        "win_ratio": 50.39,
         "kda": 5.66,
-        "ds": "2025-05-10"
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "venture",
         "hero_type": "1",
-        "selection_ratio": 1.69,
-        "win_ratio": 51.69,
+        "selection_ratio": 1.7,
+        "win_ratio": 51.72,
         "kda": 2.33,
-        "ds": "2025-05-10"
-      },
-      {
-        "hero_id": "hazard",
-        "hero_type": "2",
-        "selection_ratio": 1.69,
-        "win_ratio": 48.81,
-        "kda": 3.45,
-        "ds": "2025-05-10"
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "lifeweaver",
         "hero_type": "3",
+        "selection_ratio": 1.7,
+        "win_ratio": 48.2,
+        "kda": 4.11,
+        "ds": "2025-05-12"
+      },
+      {
+        "hero_id": "hazard",
+        "hero_type": "2",
         "selection_ratio": 1.68,
-        "win_ratio": 48.15,
-        "kda": 4.1,
-        "ds": "2025-05-10"
+        "win_ratio": 48.78,
+        "kda": 3.45,
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "bastion",
         "hero_type": "1",
-        "selection_ratio": 1.65,
-        "win_ratio": 43.71,
-        "kda": 2.39,
-        "ds": "2025-05-10"
+        "selection_ratio": 1.66,
+        "win_ratio": 43.83,
+        "kda": 2.4,
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "mauga",
         "hero_type": "2",
-        "selection_ratio": 1.63,
-        "win_ratio": 47.46,
-        "kda": 3.83,
-        "ds": "2025-05-10"
+        "selection_ratio": 1.62,
+        "win_ratio": 47.4,
+        "kda": 3.82,
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "mei",
         "hero_type": "1",
         "selection_ratio": 1.55,
-        "win_ratio": 51.66,
-        "kda": 3.15,
-        "ds": "2025-05-10"
+        "win_ratio": 51.65,
+        "kda": 3.14,
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "baptiste",
         "hero_type": "3",
-        "selection_ratio": 1.5,
-        "win_ratio": 46.93,
+        "selection_ratio": 1.53,
+        "win_ratio": 46.94,
         "kda": 3.54,
-        "ds": "2025-05-10"
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "tracer",
         "hero_type": "1",
         "selection_ratio": 1.35,
-        "win_ratio": 47.85,
+        "win_ratio": 47.89,
         "kda": 2.07,
-        "ds": "2025-05-10"
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "torbjorn",
         "hero_type": "1",
-        "selection_ratio": 1.31,
+        "selection_ratio": 1.33,
         "win_ratio": 52.86,
-        "kda": 2.5,
-        "ds": "2025-05-10"
+        "kda": 2.51,
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "lucio",
         "hero_type": "3",
-        "selection_ratio": 1.29,
-        "win_ratio": 47.89,
+        "selection_ratio": 1.28,
+        "win_ratio": 47.86,
         "kda": 2.77,
-        "ds": "2025-05-10"
-      },
-      {
-        "hero_id": "widowmaker",
-        "hero_type": "1",
-        "selection_ratio": 1.26,
-        "win_ratio": 44.26,
-        "kda": 2.1,
-        "ds": "2025-05-10"
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "illari",
         "hero_type": "3",
-        "selection_ratio": 1.25,
+        "selection_ratio": 1.26,
         "win_ratio": 50.56,
-        "kda": 2.98,
-        "ds": "2025-05-10"
+        "kda": 2.99,
+        "ds": "2025-05-12"
       },
       {
-        "hero_id": "junker-queen",
-        "hero_type": "2",
-        "selection_ratio": 1.18,
-        "win_ratio": 50.57,
-        "kda": 4.25,
-        "ds": "2025-05-10"
+        "hero_id": "widowmaker",
+        "hero_type": "1",
+        "selection_ratio": 1.25,
+        "win_ratio": 44.1,
+        "kda": 2.1,
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "junkrat",
         "hero_type": "1",
-        "selection_ratio": 1.18,
-        "win_ratio": 47.4,
+        "selection_ratio": 1.19,
+        "win_ratio": 47.42,
         "kda": 2.27,
-        "ds": "2025-05-10"
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "hanzo",
         "hero_type": "1",
-        "selection_ratio": 1.18,
-        "win_ratio": 46.41,
-        "kda": 2.68,
-        "ds": "2025-05-10"
+        "selection_ratio": 1.17,
+        "win_ratio": 46.38,
+        "kda": 2.69,
+        "ds": "2025-05-12"
+      },
+      {
+        "hero_id": "junker-queen",
+        "hero_type": "2",
+        "selection_ratio": 1.15,
+        "win_ratio": 50.49,
+        "kda": 4.24,
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "reinhardt",
         "hero_type": "2",
-        "selection_ratio": 1.15,
-        "win_ratio": 48.24,
+        "selection_ratio": 1.14,
+        "win_ratio": 48.25,
         "kda": 2.37,
-        "ds": "2025-05-10"
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "roadhog",
         "hero_type": "2",
-        "selection_ratio": 1.09,
-        "win_ratio": 43.64,
-        "kda": 3.72,
-        "ds": "2025-05-10"
+        "selection_ratio": 1.07,
+        "win_ratio": 43.48,
+        "kda": 3.71,
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "symmetra",
         "hero_type": "1",
-        "selection_ratio": 0.9,
-        "win_ratio": 54.69,
-        "kda": 2.87,
-        "ds": "2025-05-10"
-      },
-      {
-        "hero_id": "doomfist",
-        "hero_type": "2",
-        "selection_ratio": 0.69,
-        "win_ratio": 52.36,
-        "kda": 3.38,
-        "ds": "2025-05-10"
+        "selection_ratio": 0.92,
+        "win_ratio": 54.67,
+        "kda": 2.88,
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "echo",
         "hero_type": "1",
-        "selection_ratio": 0.66,
-        "win_ratio": 45.86,
-        "kda": 2.09,
-        "ds": "2025-05-10"
+        "selection_ratio": 0.67,
+        "win_ratio": 45.88,
+        "kda": 2.08,
+        "ds": "2025-05-12"
       },
       {
-        "hero_id": "zarya",
+        "hero_id": "doomfist",
         "hero_type": "2",
-        "selection_ratio": 0.63,
-        "win_ratio": 52.73,
-        "kda": 4.3,
-        "ds": "2025-05-10"
+        "selection_ratio": 0.65,
+        "win_ratio": 52.45,
+        "kda": 3.38,
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "wrecking-ball",
         "hero_type": "2",
         "selection_ratio": 0.62,
-        "win_ratio": 49.96,
-        "kda": 4.24,
-        "ds": "2025-05-10"
+        "win_ratio": 49.91,
+        "kda": 4.23,
+        "ds": "2025-05-12"
+      },
+      {
+        "hero_id": "zarya",
+        "hero_type": "2",
+        "selection_ratio": 0.61,
+        "win_ratio": 52.76,
+        "kda": 4.29,
+        "ds": "2025-05-12"
       },
       {
         "hero_id": "sombra",
         "hero_type": "1",
-        "selection_ratio": 0.25,
-        "win_ratio": 51.05,
-        "kda": 3.35,
-        "ds": "2025-05-10"
+        "selection_ratio": 0.24,
+        "win_ratio": 51.11,
+        "kda": 3.34,
+        "ds": "2025-05-12"
       }
     ]
   }
