@@ -1,4 +1,4 @@
-.PHONY: optimize-data fix-dates clean-data debug-patch-notes clean-debug fetch-patch-notes
+.PHONY: optimize-data fix-dates clean-data debug-patch-notes clean-debug fetch-patch-notes fetch-data copy-data build deploy
 
 # Optimize all historical data
 optimize-data:
@@ -20,7 +20,7 @@ clean-data:
 # Debug patch notes fetching
 debug-patch-notes:
 	@echo "Running patch notes fetcher in debug mode..."
-	@node scripts/fetch_patch_notes.cjs
+	@node scripts/test_fetch_patch_notes.js
 	@echo "Debug information has been saved to the debug directory"
 
 # Fetch patch notes
@@ -34,6 +34,26 @@ clean-debug:
 	@rm -rf debug/
 	@echo "Debug files cleaned!"
 
+# Fetch data
+fetch-data:
+	@echo "Fetching patch notes and hero data..."
+	node scripts/fetch_patch_notes.cjs
+
+# Copy data
+copy-data:
+	@echo "Copying data files to public directory..."
+	mkdir -p public/data
+	cp -r data/* public/data/
+
+# Build project
+build: fetch-data copy-data
+	@echo "Building project..."
+	npm run build
+
+# Deploy project
+deploy: build
+	@echo "Deployment complete!"
+
 # Help command
 help:
 	@echo "Available commands:"
@@ -43,4 +63,8 @@ help:
 	@echo "  make debug-patch-notes - Run patch notes fetcher in debug mode"
 	@echo "  make fetch-patch-notes - Fetch patch notes"
 	@echo "  make clean-debug      - Clean up debug files"
+	@echo "  make fetch-data       - Fetch patch notes and hero data"
+	@echo "  make copy-data        - Copy data files to public directory"
+	@echo "  make build            - Build project"
+	@echo "  make deploy           - Deploy project"
 	@echo "  make help             - Show this help message" 

@@ -1,6 +1,34 @@
-# 守望先锋英雄数据分析面板
+# 守望先锋英雄数据分析
 
-这是一个用于分析守望先锋英雄数据的交互式仪表盘，使用React和Vite构建。
+这是一个守望先锋英雄数据分析的Web应用，用于展示英雄的胜率、选择率和击杀数据趋势。
+
+## 本地开发
+
+```bash
+# 安装依赖
+npm install
+
+# 启动开发服务器
+npm run dev
+
+# 构建生产版本
+npm run build
+```
+
+## Cloudflare Pages 部署
+
+本项目可以部署到 Cloudflare Pages，配置如下：
+
+- 构建命令: `npm run build`
+- 构建输出目录: `dist`
+- Node.js 版本: 18
+
+## 项目结构
+
+- `src/`: 源代码
+- `public/`: 静态资源
+- `data/`: 数据文件
+- `dist/`: 构建输出目录
 
 ## 功能特点
 
@@ -18,29 +46,6 @@
 - Vite
 - Recharts (图表库)
 - Day.js (日期处理)
-
-## 本地开发
-
-1. 克隆仓库
-```bash
-git clone <repository-url>
-cd ow-dashboard
-```
-
-2. 安装依赖
-```bash
-npm install
-```
-
-3. 启动开发服务器
-```bash
-npm run dev
-```
-
-4. 构建生产版本
-```bash
-npm run build
-```
 
 ## 数据结构
 

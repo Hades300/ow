@@ -17,6 +17,18 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true
-  }
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'recharts', 'dayjs'],
+          ui: ['styled-jsx']
+        }
+      }
+    },
+    chunkSizeWarningLimit: 600
+  },
+  // 确保路径解析正确
+  publicDir: 'public',
+  base: '/'
 }) 
