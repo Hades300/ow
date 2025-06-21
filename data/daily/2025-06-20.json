@@ -1,0 +1,353 @@
+{
+  "season": "16",
+  "data": {
+    "code": 0,
+    "message": "成功",
+    "data": [
+      {
+        "hero_id": "ana",
+        "hero_type": "3",
+        "selection_ratio": 7.72,
+        "win_ratio": 50.25,
+        "kda": 3.87,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "kiriko",
+        "hero_type": "3",
+        "selection_ratio": 6.74,
+        "win_ratio": 48.3,
+        "kda": 4,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "cassidy",
+        "hero_type": "1",
+        "selection_ratio": 6.34,
+        "win_ratio": 49.47,
+        "kda": 2.55,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "genji",
+        "hero_type": "1",
+        "selection_ratio": 5.63,
+        "win_ratio": 51.27,
+        "kda": 2.35,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "soldier-76",
+        "hero_type": "1",
+        "selection_ratio": 5.07,
+        "win_ratio": 49.11,
+        "kda": 2.64,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "sojourn",
+        "hero_type": "1",
+        "selection_ratio": 3.92,
+        "win_ratio": 45.65,
+        "kda": 2.5,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "juno",
+        "hero_type": "3",
+        "selection_ratio": 3.7,
+        "win_ratio": 49.71,
+        "kda": 3.87,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "zenyatta",
+        "hero_type": "3",
+        "selection_ratio": 3.34,
+        "win_ratio": 50,
+        "kda": 4.59,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "moira",
+        "hero_type": "3",
+        "selection_ratio": 3.2,
+        "win_ratio": 47.14,
+        "kda": 4.62,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "sigma",
+        "hero_type": "2",
+        "selection_ratio": 3.05,
+        "win_ratio": 51.69,
+        "kda": 3.91,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "ashe",
+        "hero_type": "1",
+        "selection_ratio": 2.83,
+        "win_ratio": 51.17,
+        "kda": 2.82,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "ramattra",
+        "hero_type": "2",
+        "selection_ratio": 2.76,
+        "win_ratio": 49.95,
+        "kda": 3.54,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "orisa",
+        "hero_type": "2",
+        "selection_ratio": 2.76,
+        "win_ratio": 48.17,
+        "kda": 3.71,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "reaper",
+        "hero_type": "1",
+        "selection_ratio": 2.57,
+        "win_ratio": 49.41,
+        "kda": 2.3,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "winston",
+        "hero_type": "2",
+        "selection_ratio": 2.42,
+        "win_ratio": 46.92,
+        "kda": 3.32,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "brigitte",
+        "hero_type": "3",
+        "selection_ratio": 2.3,
+        "win_ratio": 50.52,
+        "kda": 3.72,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "mercy",
+        "hero_type": "3",
+        "selection_ratio": 2.07,
+        "win_ratio": 50.67,
+        "kda": 3.59,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "pharah",
+        "hero_type": "1",
+        "selection_ratio": 2.05,
+        "win_ratio": 49.45,
+        "kda": 2.45,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "dva",
+        "hero_type": "2",
+        "selection_ratio": 1.87,
+        "win_ratio": 50.25,
+        "kda": 5.66,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "lifeweaver",
+        "hero_type": "3",
+        "selection_ratio": 1.82,
+        "win_ratio": 48.28,
+        "kda": 4.13,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "venture",
+        "hero_type": "1",
+        "selection_ratio": 1.78,
+        "win_ratio": 51.19,
+        "kda": 2.3,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "freja",
+        "hero_type": "1",
+        "selection_ratio": 1.74,
+        "win_ratio": 48.89,
+        "kda": 2.31,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "hazard",
+        "hero_type": "2",
+        "selection_ratio": 1.7,
+        "win_ratio": 49.01,
+        "kda": 3.48,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "bastion",
+        "hero_type": "1",
+        "selection_ratio": 1.63,
+        "win_ratio": 43.82,
+        "kda": 2.39,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "baptiste",
+        "hero_type": "3",
+        "selection_ratio": 1.61,
+        "win_ratio": 47.13,
+        "kda": 3.54,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "mei",
+        "hero_type": "1",
+        "selection_ratio": 1.54,
+        "win_ratio": 51.44,
+        "kda": 3.12,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "mauga",
+        "hero_type": "2",
+        "selection_ratio": 1.52,
+        "win_ratio": 46.98,
+        "kda": 3.77,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "illari",
+        "hero_type": "3",
+        "selection_ratio": 1.44,
+        "win_ratio": 51.4,
+        "kda": 3.06,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "tracer",
+        "hero_type": "1",
+        "selection_ratio": 1.39,
+        "win_ratio": 48.14,
+        "kda": 2.07,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "torbjorn",
+        "hero_type": "1",
+        "selection_ratio": 1.33,
+        "win_ratio": 52.54,
+        "kda": 2.49,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "hanzo",
+        "hero_type": "1",
+        "selection_ratio": 1.33,
+        "win_ratio": 46.79,
+        "kda": 2.72,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "widowmaker",
+        "hero_type": "1",
+        "selection_ratio": 1.29,
+        "win_ratio": 44.21,
+        "kda": 2.12,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "lucio",
+        "hero_type": "3",
+        "selection_ratio": 1.23,
+        "win_ratio": 47.26,
+        "kda": 2.73,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "junkrat",
+        "hero_type": "1",
+        "selection_ratio": 1.2,
+        "win_ratio": 47.22,
+        "kda": 2.27,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "reinhardt",
+        "hero_type": "2",
+        "selection_ratio": 1.16,
+        "win_ratio": 48.98,
+        "kda": 2.43,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "junker-queen",
+        "hero_type": "2",
+        "selection_ratio": 1.07,
+        "win_ratio": 50.1,
+        "kda": 4.21,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "symmetra",
+        "hero_type": "1",
+        "selection_ratio": 1.06,
+        "win_ratio": 54.45,
+        "kda": 2.88,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "roadhog",
+        "hero_type": "2",
+        "selection_ratio": 1.04,
+        "win_ratio": 42.99,
+        "kda": 3.68,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "echo",
+        "hero_type": "1",
+        "selection_ratio": 0.7,
+        "win_ratio": 46.02,
+        "kda": 2.09,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "wrecking-ball",
+        "hero_type": "2",
+        "selection_ratio": 0.64,
+        "win_ratio": 49.84,
+        "kda": 4.24,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "zarya",
+        "hero_type": "2",
+        "selection_ratio": 0.6,
+        "win_ratio": 52.84,
+        "kda": 4.28,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "doomfist",
+        "hero_type": "2",
+        "selection_ratio": 0.59,
+        "win_ratio": 52.49,
+        "kda": 3.39,
+        "ds": "2025-06-20"
+      },
+      {
+        "hero_id": "sombra",
+        "hero_type": "1",
+        "selection_ratio": 0.25,
+        "win_ratio": 50.91,
+        "kda": 3.28,
+        "ds": "2025-06-20"
+      }
+    ]
+  }
+}
