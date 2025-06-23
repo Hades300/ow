@@ -123,8 +123,11 @@ const HeroSelector: React.FC<HeroSelectorProps> = ({
               <div className="hero-image-container">
                 <img
                   src={hero.hero_icon}
-                  alt={hero.hero_name}
+                  alt={`${hero.hero_name}英雄头像`}
                   className="hero-image"
+                  loading="lazy"
+                  width="64"
+                  height="64"
                 />
                 <div className="hero-role-icon">
                   <span className={`role-icon ${hero.hero_role.toLowerCase()}`} />

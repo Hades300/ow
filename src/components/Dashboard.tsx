@@ -108,7 +108,7 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="dashboard">
+    <main className="dashboard">
       <header className="dashboard-header">
         <div className="header-content">
           <h1>守望先锋英雄数据分析</h1>
@@ -116,9 +116,9 @@ const Dashboard: React.FC = () => {
         </div>
       </header>
 
-      <div className="dashboard-content">
-        <div className="sidebar">
-          <div className="hero-selector-container">
+      <main className="dashboard-content">
+        <aside className="sidebar">
+          <nav className="hero-selector-container" aria-label="英雄选择器">
             {heroMeta && (
               <HeroSelector
                 heroes={heroMeta.heroes}
@@ -129,54 +129,59 @@ const Dashboard: React.FC = () => {
                 onClearSelection={clearHeroSelection}
               />
             )}
-          </div>
-        </div>
+          </nav>
+        </aside>
 
         <div className="main-content">
-          <div className="stats-container">
-            <div className="stats-header">
+          <section className="stats-container">
+            <header className="stats-header">
               <h2>英雄数据趋势</h2>
-              <div className="stat-type-buttons">
+              <nav className="stat-type-buttons" aria-label="数据类型选择">
                 <button
                   onClick={() => setActiveStatType('w')}
                   className={`stat-button ${activeStatType === 'w' ? 'active' : ''}`}
+                  aria-pressed={activeStatType === 'w'}
                 >
                   胜率
                 </button>
                 <button
                   onClick={() => setActiveStatType('s')}
                   className={`stat-button ${activeStatType === 's' ? 'active' : ''}`}
+                  aria-pressed={activeStatType === 's'}
                 >
                   选择率
                 </button>
                 <button
                   onClick={() => setActiveStatType('k')}
                   className={`stat-button ${activeStatType === 'k' ? 'active' : ''}`}
+                  aria-pressed={activeStatType === 'k'}
                 >
                   击杀数
                 </button>
-              </div>
-            </div>
+              </nav>
+            </header>
 
             {selectedHeroes.length > 0 ? (
-              <StatsChart
-                data={heroStatHistory}
-                statType={activeStatType}
-                heroColors={heroColors}
-                heroNames={heroNames}
-                patchDates={patchDates}
-                heroMeta={heroMeta}
-              />
+              <div role="img" aria-label={`${activeStatType === 'w' ? '胜率' : activeStatType === 's' ? '选择率' : '击杀数'}趋势图表`}>
+                <StatsChart
+                  data={heroStatHistory}
+                  statType={activeStatType}
+                  heroColors={heroColors}
+                  heroNames={heroNames}
+                  patchDates={patchDates}
+                  heroMeta={heroMeta}
+                />
+              </div>
             ) : (
-              <div className="empty-chart">
+              <div className="empty-chart" role="status">
                 <p>请选择至少一个英雄来查看数据</p>
               </div>
             )}
-          </div>
+          </section>
 
           {/* Patch Notes Section */}
           {patchNotes && patchNotes.patches && patchNotes.patches.length > 0 && (
-            <div className="patch-notes">
+            <section className="patch-notes">
               <h2>更新日志</h2>
               <div className="patch-notes-list">
                 {/* 按日期分组显示补丁 */}
@@ -189,49 +194,54 @@ const Dashboard: React.FC = () => {
                     const patchesForDate = patchNotes.patches.filter(patch => patch.date === date);
                     
                     return (
-                      <div key={date} className="patch-date-group">
-                        <div className="patch-date-header">{date}</div>
+                      <article key={date} className="patch-date-group">
+                        <header className="patch-date-header">
+                          <time dateTime={date}>{date}</time>
+                        </header>
                         <div className="patch-heroes-list">
                           {patchesForDate.map((patch, index) => {
                             const hero = getHeroById(patch.hero[0]);
                             const patchTypeClass = `patch-type-${patch.patchType}`;
                             
                             return (
-                              <div key={index} className={`patch-hero-card ${patchTypeClass}`}>
-                                <div className="patch-hero-header">
+                              <article key={index} className={`patch-hero-card ${patchTypeClass}`} itemScope itemType="https://schema.org/Article">
+                                <header className="patch-hero-header">
                                   <div className="patch-hero-icon">
                                     {hero && (
                                       <img 
                                         src={hero.hero_icon} 
-                                        alt={hero.hero_name} 
+                                        alt={`${hero.hero_name}英雄头像`} 
                                         className="hero-icon"
+                                        loading="lazy"
+                                        width="32"
+                                        height="32"
                                       />
                                     )}
                                   </div>
                                   <div className="patch-hero-name">
-                                    {hero?.hero_name || patch.hero[0]}
-                                    <div className={`patch-type-badge ${patch.patchType}`}>
+                                    <span itemProp="name">{hero?.hero_name || patch.hero[0]}</span>
+                                    <span className={`patch-type-badge ${patch.patchType}`} aria-label={`${patch.patchType === 'buff' ? '增强' : patch.patchType === 'nerf' ? '削弱' : '更新'}类型`}>
                                       {patch.patchType === 'buff' ? '增强' : 
                                        patch.patchType === 'nerf' ? '削弱' : '更新'}
-                                    </div>
+                                    </span>
                                   </div>
-                                </div>
-                                <div className="patch-content">
+                                </header>
+                                <div className="patch-content" itemProp="articleBody">
                                   {patch.content}
                                 </div>
-                              </div>
+                              </article>
                             );
                           })}
                         </div>
-                      </div>
+                      </article>
                     );
                   });
                 })()}
               </div>
-            </div>
+            </section>
           )}
         </div>
-      </div>
+      </main>
 
       <style jsx>{`
         .dashboard {
@@ -589,7 +599,7 @@ const Dashboard: React.FC = () => {
           }
         }
       `}</style>
-    </div>
+    </main>
   );
 };
 

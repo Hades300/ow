@@ -72,8 +72,8 @@ async function fetchPatchNotes() {
     // Get current date info
     const today = new Date();
     const currentYear = today.getFullYear();
-    // const currentMonth = String(today.getMonth() + 1).padStart(2, '0');
-    const currentMonth = "05"
+    const currentMonth = String(today.getMonth() + 1).padStart(2, '0');
+
     
     console.log(`Fetching patch notes for ${currentYear}/${currentMonth}`);
     
